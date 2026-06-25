@@ -1,345 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loren's Cottage • LC House Hub</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        body { font-family: 'Inter', system_ui, sans-serif; }
-        .section { display: none; }
-        .section.active { display: block; }
-        .warm-btn { background: linear-gradient(to right, #0f766e, #134e4b); }
-        .warm-btn:hover { transform: translateY(-1px); }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Loren's Cottage Care System</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 text-slate-800">
-    <!-- Top Navigation -->
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div class="max-w-screen-2xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-x-3">
-                <div class="w-11 h-11 bg-teal-800 rounded-2xl flex items-center justify-center">
-                    <span class="text-white text-3xl font-bold">LC</span>
-                </div>
-                <span class="text-2xl font-semibold tracking-tight text-teal-900">Loren's Cottage</span>
-            </div>
-            <div class="flex items-center gap-x-3">
-                <button onclick="quickWhatsAppMessage()" class="px-4 py-2 bg-emerald-600 text-white rounded-2xl text-sm font-semibold flex items-center gap-x-2">
-                    <i class="fa-brands fa-whatsapp"></i> Quick Message
-                </button>
-                <button onclick="generateSundayReport()" class="px-4 py-2 border border-teal-200 rounded-2xl text-sm font-semibold">Sunday Turnover</button>
-            </div>
-        </div>
-    </nav>
 
-    <div class="max-w-screen-2xl mx-auto px-6 pt-6 pb-12">
-        <!-- Navigation Tabs -->
-        <div class="flex flex-wrap gap-2 mb-6">
-            <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="px-5 py-2 bg-teal-800 text-white rounded-3xl text-sm font-semibold">Dashboard</button>
-            <button onclick="navigateTo('children')" id="nav-children" class="px-5 py-2 hover:bg-slate-100 rounded-3xl text-sm font-semibold">Children</button>
-            <button onclick="navigateTo('chores')" id="nav-chores" class="px-5 py-2 hover:bg-slate-100 rounded-3xl text-sm font-semibold">Chores</button>
-            <button onclick="navigateTo('daily-log')" id="nav-daily-log" class="px-5 py-2 hover:bg-slate-100 rounded-3xl text-sm font-semibold">Daily Log</button>
-            <button onclick="navigateTo('incidents')" id="nav-incidents" class="px-5 py-2 hover:bg-slate-100 rounded-3xl text-sm font-semibold">Incidents</button>
-            <button onclick="navigateTo('medicine')" id="nav-medicine" class="px-5 py-2 hover:bg-slate-100 rounded-3xl text-sm font-semibold">Medicine</button>
-            <button onclick="navigateTo('communications')" id="nav-communications" class="px-5 py-2 hover:bg-slate-100 rounded-3xl text-sm font-semibold">Communications</button>
-            <button onclick="navigateTo('reports')" id="nav-reports" class="px-5 py-2 hover:bg-slate-100 rounded-3xl text-sm font-semibold">Reports</button>
-            <button onclick="navigateTo('wishlist')" id="nav-wishlist" class="px-5 py-2 hover:bg-slate-100 rounded-3xl text-sm font-semibold">Wishlist</button>
-        </div>
+<body class="bg-slate-50 p-6">
 
-        <!-- DASHBOARD -->
-        <div id="section-dashboard" class="section active">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white rounded-3xl p-6 border"><div class="text-sm text-teal-700 font-bold">KIDS IN HOUSE</div><div id="dash-kids-count" class="text-5xl font-bold text-teal-900">5</div></div>
-                <div class="bg-white rounded-3xl p-6 border"><div class="text-sm text-amber-700 font-bold">CHORES PENDING</div><div id="dash-chores-pending" class="text-5xl font-bold text-amber-900">5</div></div>
-                <div class="bg-white rounded-3xl p-6 border"><div class="text-sm text-rose-700 font-bold">MEDS DUE</div><div id="dash-meds-due" class="text-5xl font-bold text-rose-900">3</div></div>
-            </div>
-        </div>
+<h1 class="text-3xl font-bold mb-6">Loren's Cottage Care System</h1>
 
-        <!-- CHILDREN -->
-        <div id="section-children" class="section">
-            <div class="flex justify-between mb-4">
-                <h2 class="text-2xl font-semibold">Children Directory</h2>
-                <button onclick="showAddKidModal()" class="warm-btn px-5 h-10 text-white rounded-2xl text-sm">+ Add Child</button>
-            </div>
-            <div class="bg-white rounded-3xl border overflow-hidden">
-                <table class="w-full">
-                    <thead class="bg-slate-100"><tr><th class="px-6 py-3 text-left">Name</th><th class="px-6 py-3">Age</th><th class="px-6 py-3">Main Guardian</th><th class="px-6 py-3">Phone</th><th></th></tr></thead>
-                    <tbody id="kids-table-body" class="text-sm"></tbody>
-                </table>
-            </div>
-        </div>
+<!-- ================= INPUT AREA ================= -->
+<div class="bg-white p-4 rounded shadow space-y-3">
 
-        <!-- CHORES -->
-        <div id="section-chores" class="section">
-            <div class="flex justify-between mb-4">
-                <h2 class="text-2xl font-semibold">Daily Chores</h2>
-                <button onclick="showAddChoreModal()" class="warm-btn px-5 h-10 text-white rounded-2xl text-sm">+ New Chore</button>
-            </div>
-            <div class="bg-white rounded-3xl border p-2"><table class="w-full"><tbody id="chores-table-body" class="text-sm"></tbody></table></div>
-        </div>
+<!-- Child -->
+<select id="childSelect" class="w-full border p-2 rounded">
+<option value="">Select Child</option>
+</select>
 
-        <!-- DAILY LOG -->
-        <div id="section-daily-log" class="section">
-            <h2 class="text-2xl font-semibold mb-4">Daily Log &amp; Feedback</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="bg-white rounded-3xl border p-6">
-                    <h3 class="font-bold mb-2">Today's Schedule (paste from TeamUp)</h3>
-                    <textarea id="today-schedule" rows="6" class="w-full border rounded-2xl p-4 text-sm" placeholder="Paste today's schedule from TeamUp here..."></textarea>
-                    <button onclick="saveDailySchedule()" class="mt-3 warm-btn px-6 h-10 text-white rounded-2xl text-sm">Save Schedule</button>
-                </div>
-                <div class="bg-white rounded-3xl border p-6">
-                    <h3 class="font-bold mb-2">Daily Feedback / What Happened</h3>
-                    <textarea id="daily-general-notes" rows="6" class="w-full border rounded-2xl p-4 text-sm" placeholder="Write what the kids did today..."></textarea>
-                    <button onclick="saveDailyFeedback()" class="mt-3 warm-btn px-6 h-10 text-white rounded-2xl text-sm">Save Feedback</button>
-                </div>
-            </div>
-        </div>
+<!-- Guardian -->
+<select id="guardianSelect" class="w-full border p-2 rounded">
+<option value="">Select Guardian</option>
+</select>
 
-        <!-- INCIDENTS -->
-        <div id="section-incidents" class="section">
-            <div class="flex justify-between mb-4">
-                <h2 class="text-2xl font-semibold">Incident Reports</h2>
-                <button onclick="showAddIncidentModal()" class="warm-btn px-5 h-10 text-white rounded-2xl text-sm">+ Log Incident</button>
-            </div>
-            <div class="bg-white rounded-3xl border p-2">
-                <table class="w-full"><tbody id="incidents-table-body" class="text-sm"></tbody></table>
-            </div>
-        </div>
+<!-- Type -->
+<select id="typeSelect" class="w-full border p-2 rounded">
+<option value="daily">Daily Log</option>
+<option value="incident">Incident Report</option>
+<option value="feedback">Daily Feedback</option>
+</select>
 
-        <!-- MEDICINE -->
-        <div id="section-medicine" class="section">
-            <h2 class="text-2xl font-semibold mb-4">Medicine &amp; Care</h2>
-            <button onclick="showLogMedicineModal()" class="warm-btn px-6 h-10 text-white rounded-2xl text-sm">Log Medicine</button>
-            <div id="medicine-recent-logs" class="mt-4 text-sm"></div>
-        </div>
+<!-- Text -->
+<textarea id="textInput" class="w-full border p-2 rounded" placeholder="Write details..."></textarea>
 
-        <!-- COMMUNICATIONS -->
-        <div id="section-communications" class="section">
-            <h2 class="text-2xl font-semibold mb-4">Quick Links</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <button onclick="window.open('https://app.teamup.com/', '_blank')" class="p-4 bg-emerald-50 rounded-2xl text-left font-semibold">Open TeamUp</button>
-                <button onclick="window.open('https://slack.com', '_blank')" class="p-4 bg-purple-50 rounded-2xl text-left font-semibold">Open Slack</button>
-                <button onclick="window.open('https://outlook.office.com', '_blank')" class="p-4 bg-blue-50 rounded-2xl text-left font-semibold">Open Outlook</button>
-            </div>
-            
-            <div class="bg-white rounded-3xl border p-6">
-                <div class="flex justify-between mb-4">
-                    <h3 class="font-bold">Phone Call Log</h3>
-                    <button onclick="showLogCallModal()" class="warm-btn px-4 h-9 text-white rounded-2xl text-sm">+ Log Call</button>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
-                        <thead class="text-xs text-slate-500 border-b">
-                            <tr><th class="text-left py-2 px-3">Date</th><th class="text-left py-2 px-3">Child</th><th class="text-left py-2 px-3">Guardian Called</th><th class="text-center py-2 px-3">Outcome</th></tr>
-                        </thead>
-                        <tbody id="phone-logs-table" class="text-xs divide-y"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+<button onclick="saveEntry()" class="bg-teal-600 text-white px-4 py-2 rounded">
+Save Entry
+</button>
 
-        <!-- REPORTS -->
-        <div id="section-reports" class="section">
-            <button onclick="generateSundayReport()" class="warm-btn px-8 h-12 text-white rounded-3xl">Generate Sunday Turnover Report</button>
-        </div>
+</div>
 
-        <!-- WISHLIST -->
-        <div id="section-wishlist" class="section">
-            <h2 class="text-2xl font-semibold mb-4">Wishlist</h2>
-            <button onclick="showAddWishModal()" class="warm-btn px-5 h-10 text-white rounded-2xl text-sm">+ Add Wish</button>
-            <div id="wishlist-table-body" class="mt-4"></div>
-        </div>
-    </div>
+<!-- ================= LOGS ================= -->
+<div class="mt-6 bg-white p-4 rounded shadow">
+<h2 class="font-bold mb-3">All Records</h2>
+<div id="logList" class="space-y-3"></div>
+</div>
 
-    <!-- Modals -->
-    <div id="kid-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
-        <div class="bg-white w-full max-w-lg mx-4 rounded-3xl p-7">
-            <h3 class="text-xl font-semibold mb-4">Add/Edit Child</h3>
-            <input id="kid-name" placeholder="Full Name" class="w-full border p-3 rounded-2xl mb-3">
-            <input id="kid-age" placeholder="Age" type="number" class="w-full border p-3 rounded-2xl mb-3">
-            <input id="kid-guardian" placeholder="Main Guardian" class="w-full border p-3 rounded-2xl mb-3">
-            <input id="kid-phone" placeholder="Phone" class="w-full border p-3 rounded-2xl mb-3">
-            <textarea id="kid-notes" placeholder="Other guardians, phones, notes..." class="w-full border p-3 rounded-2xl mb-3" rows="4"></textarea>
-            <div class="flex justify-end gap-x-3 mt-4">
-                <button onclick="hideKidModal()" class="px-6 py-2">Cancel</button>
-                <button onclick="saveKid()" class="warm-btn px-6 py-2 text-white rounded-2xl">Save</button>
-            </div>
-        </div>
-    </div>
+<script>
+/* ================= FULL DATA (FROM YOUR SHEET) ================= */
+let state = {
+  children: [
+    { name: "Xochtli Orda z", guardians: ["Luis Ordaz (Dad)", "Uncle Jeremy", "Tia Nancy"] },
+    { name: "Melody Hernandez", guardians: ["Maritza Hernandez (Mom)", "Primo", "Luna Hernandez"] },
+    { name: "A'Niya Jackson", guardians: ["Shantaze Jackson", "Desaree Rily", "Keshunda Jackson"] },
+    { name: "Truth Sutton", guardians: ["Aleesa Baker", "Joseph Barrientes"] },
+    { name: "Gianna Taylor", guardians: ["Dan Taylor", "GiGi Taylor", "Russ Taylor"] }
+  ],
+  logs: []
+};
 
-    <!-- Log Call Modal with individual guardian selection -->
-    <div id="call-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
-        <div class="bg-white w-full max-w-md mx-4 rounded-3xl p-7">
-            <h3 class="text-xl font-semibold mb-4">Log Guardian Call</h3>
-            <select id="call-kid-select" class="w-full border p-3 rounded-2xl mb-3"></select>
-            <input id="call-guardian-name" placeholder="Exact guardian you called (e.g. Aunt Patricia Hillman)" class="w-full border p-3 rounded-2xl mb-3">
-            <div class="grid grid-cols-2 gap-3 mb-3">
-                <input id="call-date" type="date" class="border p-3 rounded-2xl">
-                <select id="call-outcome" class="border p-3 rounded-2xl">
-                    <option value="Good">Good / Positive</option>
-                    <option value="Okay">Okay / Neutral</option>
-                    <option value="Needs Attention">Needs Attention</option>
-                    <option value="Not Well">Not Well</option>
-                </select>
-            </div>
-            <textarea id="call-notes" placeholder="Notes from the call..." class="w-full border p-3 rounded-2xl mb-4" rows="3"></textarea>
-            <div class="flex justify-end gap-x-3">
-                <button onclick="hideCallModal()" class="px-6 py-2">Cancel</button>
-                <button onclick="savePhoneCall()" class="warm-btn px-6 py-2 text-white rounded-2xl">Save Call</button>
-            </div>
-        </div>
-    </div>
+/* ================= INIT ================= */
+function init() {
+  const childSelect = document.getElementById("childSelect");
+  const guardianSelect = document.getElementById("guardianSelect");
 
-    <div id="toast" class="hidden fixed bottom-5 right-5 bg-teal-900 text-white px-6 py-3 rounded-3xl flex items-center gap-x-2">
-        <span id="toast-message"></span>
-    </div>
+  // load children
+  state.children.forEach((c, i) => {
+    childSelect.innerHTML += `<option value="${i}">${c.name}</option>`;
+  });
 
-    <script>
-        let state = { kids: [], chores: [], medicineLogs: [], phoneLogs: [], incidents: [], wishItems: [], todaySchedule: "", dailyGeneralNotes: "" };
+  // auto-fill guardians
+  childSelect.onchange = function () {
+    guardianSelect.innerHTML = "";
+    let child = state.children[this.value];
+    if (!child) return;
 
-        function saveState() { localStorage.setItem('lorensCottageState', JSON.stringify(state)); }
+    child.guardians.forEach(g => {
+      guardianSelect.innerHTML += `<option value="${g}">${g}</option>`;
+    });
+  };
 
-        function loadState() {
-            const saved = localStorage.getItem('lorensCottageState');
-            if (saved) state = JSON.parse(saved);
-            else seedRealData();
-        }
+  render();
+}
 
-        function seedRealData() {
-            state.kids = [
-                { id: 101, name: "Xochtli Ordaz", age: 13, guardian: "Luis Ordaz (Dad)", phone: "602-800-8717", notes: "Uncle Jeremy: 602-551-4186\nTia Nancy: (602) 641-1658\nRoseanne Garcia - Not approved", callLogs: [] },
-                { id: 102, name: "Melody Hernandez", age: 12, guardian: "Maritza Hernandez (Mom)", phone: "(623) 986-3010", notes: "Primo: (602) 466-4642\nElena Sevilla - Unapproved", callLogs: [] },
-                { id: 103, name: "A'Niya Jackson", age: 12, guardian: "Shantaze Jackson (Mom)", phone: "623-764-7040", notes: "Special number: (480) 442-3270", callLogs: [] },
-                { id: 104, name: "Truth Sutton", age: 7, guardian: "Aleesa Baker (Mom)", phone: "602-349-8846", notes: "Joseph Barrientes (Emergency)", callLogs: [] },
-                { id: 105, name: "Gianna Taylor", age: 13, guardian: "Dan Taylor", phone: "(480) 220-7392", notes: "GiGi: (480) 263-1844", callLogs: [] }
-            ];
-            saveState();
-        }
+/* ================= SAVE ENTRY ================= */
+function saveEntry() {
+  const childIndex = document.getElementById("childSelect").value;
+  const guardian = document.getElementById("guardianSelect").value;
+  const type = document.getElementById("typeSelect").value;
+  const text = document.getElementById("textInput").value;
 
-        function navigateTo(section) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById('section-' + section).classList.add('active');
-            if (section === 'children') renderKidsTable();
-            if (section === 'incidents') renderIncidentsTable();
-        }
+  if (childIndex === "" || !text) return;
 
-        function renderKidsTable() {
-            const tbody = document.getElementById('kids-table-body');
-            tbody.innerHTML = '';
-            state.kids.forEach(kid => {
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-teal-50 cursor-pointer';
-                tr.innerHTML = `<td class="px-6 py-3 font-semibold">${kid.name}</td><td class="px-6 py-3">${kid.age} yrs</td><td class="px-6 py-3">${kid.guardian}</td><td class="px-6 py-3">${kid.phone}</td>`;
-                tr.onclick = () => showKidDetail(kid.id);
-                tbody.appendChild(tr);
-            });
-        }
+  state.logs.push({
+    id: Date.now(),
+    child: state.children[childIndex].name,
+    guardian,
+    type,
+    text,
+    date: new Date().toLocaleString()
+  });
 
-        function showKidDetail(id) {
-            const kid = state.kids.find(k => k.id === id);
-            if (!kid) return;
-            alert(`Child: ${kid.name}\nMain Guardian: ${kid.guardian}\nPhone: ${kid.phone}\n\nOther Contacts:\n${kid.notes || 'None'}`);
-        }
+  document.getElementById("textInput").value = "";
+  render();
+}
 
-        function showAddKidModal() { document.getElementById('kid-modal').classList.remove('hidden'); }
-        function hideKidModal() { document.getElementById('kid-modal').classList.add('hidden'); }
-        function saveKid() {
-            const name = document.getElementById('kid-name').value.trim();
-            if (!name) return;
-            state.kids.push({
-                id: Date.now(), name, age: document.getElementById('kid-age').value,
-                guardian: document.getElementById('kid-guardian').value, phone: document.getElementById('kid-phone').value,
-                notes: document.getElementById('kid-notes').value, callLogs: []
-            });
-            saveState(); hideKidModal(); renderKidsTable();
-        }
+/* ================= RENDER ================= */
+function render() {
+  const list = document.getElementById("logList");
+  list.innerHTML = "";
 
-        function showAddChoreModal() {
-            const name = prompt("Chore name:");
-            if (!name) return;
-            state.chores = state.chores || [];
-            state.chores.push({ id: Date.now(), name, assignedKidId: null, status: "pending", notes: "" });
-            saveState();
-        }
+  state.logs.slice().reverse().forEach(l => {
 
-        function renderIncidentsTable() {
-            const tbody = document.getElementById('incidents-table-body');
-            if (!state.incidents || state.incidents.length === 0) {
-                tbody.innerHTML = '<tr><td class="px-6 py-8 text-center text-slate-400">No incidents logged yet.</td></tr>';
-                return;
-            }
-            tbody.innerHTML = state.incidents.map(i => `<tr><td class="px-5 py-3">${i.date}</td><td class="px-5 py-3">${i.childName}</td><td class="px-5 py-3">${i.description}</td></tr>`).join('');
-        }
+    let color =
+      l.type === "incident" ? "border-red-500" :
+      l.type === "feedback" ? "border-blue-500" :
+      "border-green-500";
 
-        function showAddIncidentModal() {
-            const child = prompt("Child name:");
-            const desc = prompt("What happened?");
-            if (!child || !desc) return;
-            state.incidents = state.incidents || [];
-            state.incidents.push({ id: Date.now(), date: new Date().toISOString().split('T')[0], childName: child, description: desc });
-            saveState(); renderIncidentsTable();
-        }
+    list.innerHTML += `
+      <div class="border-l-4 ${color} bg-white p-3 rounded shadow-sm">
+        <div class="text-xs text-gray-500">${l.date}</div>
+        <div class="font-bold">${l.child} → ${l.guardian || "No Guardian Selected"}</div>
+        <div class="text-xs uppercase">${l.type}</div>
+        <div class="mt-1">${l.text}</div>
+      </div>
+    `;
+  });
+}
 
-        function saveDailySchedule() { state.todaySchedule = document.getElementById('today-schedule').value; saveState(); alert("Schedule saved"); }
-        function saveDailyFeedback() { state.dailyGeneralNotes = document.getElementById('daily-general-notes').value; saveState(); alert("Feedback saved"); }
+init();
+</script>
 
-        function showLogCallModal() {
-            const select = document.getElementById('call-kid-select');
-            select.innerHTML = '';
-            state.kids.forEach(kid => {
-                const opt = document.createElement('option');
-                opt.value = kid.id;
-                opt.textContent = kid.name;
-                select.appendChild(opt);
-            });
-            document.getElementById('call-modal').classList.remove('hidden');
-        }
-
-        function hideCallModal() { document.getElementById('call-modal').classList.add('hidden'); }
-
-        function savePhoneCall() {
-            const kidId = parseInt(document.getElementById('call-kid-select').value);
-            const guardianName = document.getElementById('call-guardian-name').value.trim() || "Main Guardian";
-            const date = document.getElementById('call-date').value || new Date().toISOString().split('T')[0];
-            const outcome = document.getElementById('call-outcome').value;
-            const notes = document.getElementById('call-notes').value.trim();
-
-            state.phoneLogs = state.phoneLogs || [];
-            state.phoneLogs.push({ id: Date.now(), date, kidId, guardianName, outcome, notes });
-
-            const kid = state.kids.find(k => k.id === kidId);
-            if (kid) {
-                kid.callLogs = kid.callLogs || [];
-                kid.callLogs.push({ date, outcome, notes, guardianName });
-            }
-
-            saveState();
-            hideCallModal();
-            alert("Call logged successfully!");
-        }
-
-        function generateSundayReport() {
-            let report = `LOREN'S COTTAGE SUNDAY TURNOVER\n\nKids: ${state.kids.length}\nDaily Notes: ${state.dailyGeneralNotes || "None"}\nIncidents: ${state.incidents ? state.incidents.length : 0}\n\n- Dramane & Tiffany`;
-            navigator.clipboard.writeText(report);
-            alert("Report copied to clipboard");
-        }
-
-        function quickWhatsAppMessage() {
-            const msg = prompt("Message:");
-            if (msg) window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        function initializeApp() {
-            loadState();
-            renderKidsTable();
-            renderIncidentsTable();
-            if (state.todaySchedule) document.getElementById('today-schedule').value = state.todaySchedule;
-            if (state.dailyGeneralNotes) document.getElementById('daily-general-notes').value = state.dailyGeneralNotes;
-            document.getElementById('section-dashboard').classList.add('active');
-        }
-
-        window.onload = initializeApp;
-    </script>
 </body>
 </html>
