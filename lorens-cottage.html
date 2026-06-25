@@ -7,714 +7,359 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Playfair+Display:wght@700&amp;display=swap');
-        
         body { font-family: 'Inter', system_ui, sans-serif; }
-        .heading-serif { font-family: 'Playfair Display', Georgia, serif; }
-
         .section { display: none; }
         .section.active { display: block; }
-
-        .nav-active { background-color: #0f766e; color: white; border-radius: 9999px; }
-
-        .modal { animation: modalPopIn 0.2s ease forwards; }
-        @keyframes modalPopIn {
-            from { opacity: 0; transform: scale(0.95) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        .chore-row:hover { background-color: #f8fafc; }
-        .log-entry { transition: all 0.2s ease; }
-
-        .lc-badge {
-            background: linear-gradient(90deg, #0f766e, #134e4b);
-            color: white;
-            padding: 2px 10px;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .warm-btn {
-            background: linear-gradient(to right, #0f766e, #134e4b);
-            transition: all 0.2s ease;
-        }
-        .warm-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 15px -3px rgb(15 118 110 / 0.3); }
-
-        .soft-card { background: white; border: 1px solid #e2e8f0; }
+        .warm-btn { background: linear-gradient(to right, #0f766e, #134e4b); }
+        .warm-btn:hover { transform: translateY(-1px); }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
     <!-- Top Navigation -->
     <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div class="max-w-screen-2xl mx-auto">
-            <div class="px-6 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-x-4">
-                    <div class="flex items-center gap-x-3">
-                        <div class="w-11 h-11 bg-teal-800 rounded-2xl flex items-center justify-center shadow-inner">
-                            <span class="text-white text-3xl font-bold tracking-tighter">LC</span>
-                        </div>
-                        <div>
-                            <div class="flex items-baseline gap-x-2">
-                                <span class="text-2xl font-semibold tracking-tight text-teal-900">Loren's Cottage</span>
-                                <span class="lc-badge text-[10px]">LC</span>
-                            </div>
-                            <p class="text-[10px] text-teal-700 -mt-1 font-medium">Sunshine Acres • Children's Home</p>
-                        </div>
-                    </div>
+        <div class="max-w-screen-2xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-11 h-11 bg-teal-800 rounded-2xl flex items-center justify-center">
+                    <span class="text-white text-3xl font-bold">LC</span>
                 </div>
-
-                <div class="hidden md:flex items-center gap-x-3 bg-slate-100 rounded-3xl px-4 py-1.5 text-sm">
-                    <div class="flex items-center gap-x-2">
-                        <div class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                        <span class="font-semibold text-emerald-700">ON SHIFT</span>
-                    </div>
-                    <div class="text-slate-500 text-xs font-medium">Tue 10:00 PM — Mon 6:00 AM</div>
+                <div>
+                    <span class="text-2xl font-semibold tracking-tight text-teal-900">Loren's Cottage</span>
                 </div>
-
-                <div class="flex items-center gap-x-2">
-                    <div class="flex items-center bg-white border border-slate-200 rounded-3xl pl-1 pr-4 py-1 shadow-sm">
-                        <div class="flex -space-x-1 mr-3">
-                            <div class="w-7 h-7 bg-amber-200 border border-white rounded-full flex items-center justify-center text-[10px] font-bold text-amber-700 ring-1 ring-amber-300">D</div>
-                            <div class="w-7 h-7 bg-rose-200 border border-white rounded-full flex items-center justify-center text-[10px] font-bold text-rose-700 ring-1 ring-rose-300">T</div>
-                        </div>
-                        <div class="text-sm"><span class="font-semibold text-slate-700">Dramane &amp; Tiffany</span></div>
-                    </div>
-                    
-                    <button onclick="showSettings()" class="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-teal-700 hover:bg-teal-50 rounded-2xl transition-colors">
-                        <i class="fa-solid fa-cog text-xl"></i>
-                    </button>
-                </div>
+            </div>
+            <div class="flex items-center gap-x-3">
+                <button onclick="quickWhatsAppMessage()" class="px-4 py-2 bg-emerald-600 text-white rounded-2xl text-sm font-semibold flex items-center gap-x-2">
+                    <i class="fa-brands fa-whatsapp"></i> Quick Message
+                </button>
+                <button onclick="generateSundayReport()" class="px-4 py-2 border border-teal-200 rounded-2xl text-sm font-semibold">Sunday Turnover</button>
             </div>
         </div>
     </nav>
 
     <div class="max-w-screen-2xl mx-auto px-6 pt-6 pb-12">
-        <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-8 gap-y-4">
-            <div>
-                <h1 id="page-title" class="text-4xl font-semibold tracking-tighter text-teal-950">Dashboard</h1>
-                <p id="page-subtitle" class="text-teal-700 mt-1">Welcome back to Loren's Cottage • Your home away from home</p>
-            </div>
-            
-            <div class="flex items-center gap-x-3">
-                <button onclick="quickWhatsAppMessage()" class="flex items-center gap-x-2 px-5 h-11 bg-emerald-600 hover:bg-emerald-700 transition-all text-white rounded-3xl text-sm font-semibold shadow-sm active:scale-[0.985]">
-                    <i class="fa-brands fa-whatsapp text-lg"></i>
-                    <span>Quick Message</span>
-                </button>
-                
-                <button onclick="generateSundayReport()" class="flex items-center gap-x-2 px-5 h-11 bg-white border border-teal-200 hover:bg-teal-50 text-teal-800 transition-all rounded-3xl text-sm font-semibold shadow-sm active:scale-[0.985]">
-                    <i class="fa-solid fa-file-lines mr-1.5"></i>
-                    <span>Sunday Turnover</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- NAVIGATION -->
-        <div class="flex flex-wrap gap-2 mb-6 border-b border-slate-200 pb-1">
-            <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="nav-item flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-3xl bg-teal-800 text-white">
-                <i class="fa-solid fa-home w-4"></i><span>Dashboard</span>
-            </button>
-            <button onclick="navigateTo('children')" id="nav-children" class="nav-item flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-3xl hover:bg-slate-100 text-slate-700">
-                <i class="fa-solid fa-users w-4"></i><span>Children</span>
-            </button>
-            <button onclick="navigateTo('chores')" id="nav-chores" class="nav-item flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-3xl hover:bg-slate-100 text-slate-700">
-                <i class="fa-solid fa-tasks w-4"></i><span>Chores</span>
-            </button>
-            <button onclick="navigateTo('daily-log')" id="nav-daily-log" class="nav-item flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-3xl hover:bg-slate-100 text-slate-700">
-                <i class="fa-solid fa-clipboard-list w-4"></i><span>Daily Log</span>
-            </button>
-            <button onclick="navigateTo('incidents')" id="nav-incidents" class="nav-item flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-3xl hover:bg-slate-100 text-slate-700">
-                <i class="fa-solid fa-exclamation-triangle w-4"></i><span>Incidents</span>
-            </button>
-            <button onclick="navigateTo('medicine')" id="nav-medicine" class="nav-item flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-3xl hover:bg-slate-100 text-slate-700">
-                <i class="fa-solid fa-pills w-4"></i><span>Medicine</span>
-            </button>
-            <button onclick="navigateTo('communications')" id="nav-communications" class="nav-item flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-3xl hover:bg-slate-100 text-slate-700">
-                <i class="fa-solid fa-phone w-4"></i><span>Communications</span>
-            </button>
-            <button onclick="navigateTo('reports')" id="nav-reports" class="nav-item flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-3xl hover:bg-slate-100 text-slate-700">
-                <i class="fa-solid fa-chart-line w-4"></i><span>Reports</span>
-            </button>
-            <button onclick="navigateTo('wishlist')" id="nav-wishlist" class="nav-item flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-3xl hover:bg-slate-100 text-slate-700">
-                <i class="fa-solid fa-gift w-4"></i><span>Wishlist</span>
-            </button>
+        <!-- Navigation -->
+        <div class="flex flex-wrap gap-2 mb-6">
+            <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="px-5 py-2 bg-teal-800 text-white rounded-3xl text-sm font-semibold">Dashboard</button>
+            <button onclick="navigateTo('children')" id="nav-children" class="px-5 py-2 hover:bg-slate-100 rounded-3xl text-sm font-semibold">Children</button>
+            <button onclick="navigateTo('chores')" id="nav-chores" class="px-5 py-2 hover:bg-slate-100 rounded-3xl text-sm font-semibold">Chores</button>
+            <button onclick="navigateTo('daily-log')" id="nav-daily-log" class="px-5 py-2 hover:bg-slate-100 rounded-3xl text-sm font-semibold">Daily Log</button>
+            <button onclick="navigateTo('incidents')" id="nav-incidents" class="px-5 py-2 hover:bg-slate-100 rounded-3xl text-sm font-semibold">Incidents</button>
+            <button onclick="navigateTo('medicine')" id="nav-medicine" class="px-5 py-2 hover:bg-slate-100 rounded-3xl text-sm font-semibold">Medicine</button>
+            <button onclick="navigateTo('communications')" id="nav-communications" class="px-5 py-2 hover:bg-slate-100 rounded-3xl text-sm font-semibold">Communications</button>
+            <button onclick="navigateTo('reports')" id="nav-reports" class="px-5 py-2 hover:bg-slate-100 rounded-3xl text-sm font-semibold">Reports</button>
+            <button onclick="navigateTo('wishlist')" id="nav-wishlist" class="px-5 py-2 hover:bg-slate-100 rounded-3xl text-sm font-semibold">Wishlist</button>
         </div>
 
         <!-- DASHBOARD -->
         <div id="section-dashboard" class="section active">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <div class="lg:col-span-7 bg-white rounded-3xl p-7 soft-card border border-slate-100">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <div class="flex items-center gap-x-3">
-                                <span class="text-5xl">👋</span>
-                                <div>
-                                    <h2 class="text-3xl font-semibold tracking-tight">Good evening, Houseparents</h2>
-                                    <p class="text-slate-600 mt-1">Loren's Cottage is ready for another beautiful night of care.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-8 grid grid-cols-3 gap-4">
-                        <div class="bg-teal-50 rounded-2xl p-4">
-                            <div class="text-teal-700 text-xs font-bold tracking-wider">KIDS IN HOUSE</div>
-                            <div id="dash-kids-count" class="text-5xl font-semibold text-teal-900 metric-value mt-1">5</div>
-                        </div>
-                        <div class="bg-amber-50 rounded-2xl p-4">
-                            <div class="text-amber-700 text-xs font-bold tracking-wider">CHORES PENDING</div>
-                            <div id="dash-chores-pending" class="text-5xl font-semibold text-amber-900 metric-value mt-1">5</div>
-                        </div>
-                        <div class="bg-rose-50 rounded-2xl p-4">
-                            <div class="text-rose-700 text-xs font-bold tracking-wider">MEDS DUE</div>
-                            <div id="dash-meds-due" class="text-5xl font-semibold text-rose-900 metric-value mt-1">3</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-5 bg-white rounded-3xl p-7 soft-card border border-slate-100">
-                    <h3 class="font-semibold text-lg mb-4 flex items-center gap-x-2">
-                        <i class="fa-solid fa-bolt text-amber-500"></i> 
-                        <span>Quick Actions</span>
-                    </h3>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="showAddKidModal()" class="group flex flex-col items-start justify-center gap-y-1 p-4 rounded-2xl border border-slate-200 hover:border-teal-300 hover:bg-teal-50 transition-all text-left">
-                            <i class="fa-solid fa-user-plus text-teal-600 text-xl"></i>
-                            <span class="font-semibold text-sm mt-2">Add New Child</span>
-                        </button>
-                        <button onclick="showLogMedicineModal()" class="group flex flex-col items-start justify-center gap-y-1 p-4 rounded-2xl border border-slate-200 hover:border-teal-300 hover:bg-teal-50 transition-all text-left">
-                            <i class="fa-solid fa-pills text-teal-600 text-xl"></i>
-                            <span class="font-semibold text-sm mt-2">Log Medicine</span>
-                        </button>
-                        <button onclick="navigateTo('daily-log')" class="group flex flex-col items-start justify-center gap-y-1 p-4 rounded-2xl border border-slate-200 hover:border-teal-300 hover:bg-teal-50 transition-all text-left">
-                            <i class="fa-solid fa-clipboard-list text-teal-600 text-xl"></i>
-                            <span class="font-semibold text-sm mt-2">Daily Feedback</span>
-                        </button>
-                        <button onclick="navigateTo('incidents')" class="group flex flex-col items-start justify-center gap-y-1 p-4 rounded-2xl border border-slate-200 hover:border-teal-300 hover:bg-teal-50 transition-all text-left">
-                            <i class="fa-solid fa-exclamation-triangle text-teal-600 text-xl"></i>
-                            <span class="font-semibold text-sm mt-2">Log Incident</span>
-                        </button>
-                    </div>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white rounded-3xl p-6 border"><div class="text-sm text-teal-700 font-bold">KIDS</div><div id="dash-kids-count" class="text-5xl font-bold">5</div></div>
+                <div class="bg-white rounded-3xl p-6 border"><div class="text-sm text-amber-700 font-bold">CHORES PENDING</div><div id="dash-chores-pending" class="text-5xl font-bold">5</div></div>
+                <div class="bg-white rounded-3xl p-6 border"><div class="text-sm text-rose-700 font-bold">MEDS DUE</div><div id="dash-meds-due" class="text-5xl font-bold">3</div></div>
             </div>
         </div>
 
         <!-- CHILDREN -->
         <div id="section-children" class="section">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-3xl font-semibold tracking-tight">Children Directory</h2>
-                    <p class="text-slate-600">All current residents with full contact details</p>
-                </div>
-                <button onclick="showAddKidModal()" class="warm-btn flex items-center gap-x-2 text-white px-6 h-12 rounded-3xl font-semibold text-sm">
-                    <i class="fa-solid fa-plus mr-2"></i> <span>Add New Child</span>
-                </button>
+            <div class="flex justify-between mb-4">
+                <h2 class="text-2xl font-semibold">Children Directory</h2>
+                <button onclick="showAddKidModal()" class="warm-btn px-5 h-10 text-white rounded-2xl text-sm">+ Add Child</button>
             </div>
-
-            <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-slate-100">
-                            <tr class="text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
-                                <th class="px-6 py-4">Child</th>
-                                <th class="px-6 py-4">Age</th>
-                                <th class="px-6 py-4">Main Guardian</th>
-                                <th class="px-6 py-4">Phone</th>
-                                <th class="px-6 py-4 text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="kids-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
-                    </table>
-                </div>
+            <div class="bg-white rounded-3xl border overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-slate-100"><tr><th class="px-6 py-3 text-left">Name</th><th class="px-6 py-3">Age</th><th class="px-6 py-3">Main Guardian</th><th class="px-6 py-3">Phone</th><th></th></tr></thead>
+                    <tbody id="kids-table-body" class="text-sm"></tbody>
+                </table>
             </div>
         </div>
 
         <!-- CHORES -->
         <div id="section-chores" class="section">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-3xl font-semibold tracking-tight">Daily Chores</h2>
-                    <p class="text-slate-600">Fully flexible — change anytime</p>
-                </div>
-                <div class="flex gap-x-3">
-                    <button onclick="showAddChoreModal()" class="warm-btn flex items-center gap-x-2 text-white px-5 h-11 rounded-3xl font-semibold text-sm">
-                        <i class="fa-solid fa-plus"></i> <span>New Assignment</span>
-                    </button>
-                    <button onclick="resetDailyChores()" class="px-5 h-11 flex items-center gap-x-2 text-sm font-semibold border border-slate-300 hover:bg-slate-100 rounded-3xl">
-                        <i class="fa-solid fa-redo"></i> <span>Reset Day</span>
-                    </button>
-                </div>
+            <div class="flex justify-between mb-4">
+                <h2 class="text-2xl font-semibold">Daily Chores</h2>
+                <button onclick="showAddChoreModal()" class="warm-btn px-5 h-10 text-white rounded-2xl text-sm">+ New Chore</button>
             </div>
-            <div class="bg-white rounded-3xl border border-slate-200 p-2">
-                <table class="w-full">
-                    <thead>
-                        <tr class="text-xs font-bold text-slate-600 border-b border-slate-100">
-                            <th class="px-5 py-4 text-left">Chore</th>
-                            <th class="px-5 py-4 text-left">Assigned To</th>
-                            <th class="px-5 py-4 text-center">Status</th>
-                            <th class="px-5 py-4 text-left">Notes</th>
-                            <th class="px-5 py-4"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="chores-table-body" class="text-sm divide-y divide-slate-100"></tbody>
-                </table>
-            </div>
+            <div class="bg-white rounded-3xl border p-2"><table class="w-full"><tbody id="chores-table-body" class="text-sm"></tbody></table></div>
         </div>
 
-        <!-- DAILY LOG (NEW) -->
+        <!-- DAILY LOG -->
         <div id="section-daily-log" class="section">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-3xl font-semibold tracking-tight">Daily Log &amp; Feedback</h2>
-                    <p class="text-slate-600">What the kids did today + TeamUp schedule</p>
-                </div>
-            </div>
-
+            <h2 class="text-2xl font-semibold mb-4">Daily Log &amp; Feedback</h2>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Today's Schedule from TeamUp -->
-                <div class="bg-white rounded-3xl border border-slate-200 p-6">
-                    <h3 class="font-bold mb-3 flex items-center gap-x-2">
-                        <i class="fa-solid fa-calendar-check text-teal-600"></i>
-                        <span>Today's Schedule (from TeamUp)</span>
-                    </h3>
-                    <textarea id="today-schedule" rows="6" class="w-full border border-slate-300 rounded-2xl p-4 text-sm" placeholder="Paste or type today's schedule from TeamUp here..."></textarea>
-                    <button onclick="saveDailySchedule()" class="mt-3 warm-btn px-6 h-10 text-white text-sm rounded-2xl">Save Schedule</button>
+                <div class="bg-white rounded-3xl border p-6">
+                    <h3 class="font-bold mb-2">Today's Schedule (from TeamUp)</h3>
+                    <textarea id="today-schedule" rows="6" class="w-full border rounded-2xl p-4 text-sm" placeholder="Paste today's schedule from TeamUp here..."></textarea>
+                    <button onclick="saveDailySchedule()" class="mt-3 warm-btn px-6 h-10 text-white rounded-2xl text-sm">Save Schedule</button>
                 </div>
-
-                <!-- Daily Feedback -->
-                <div class="bg-white rounded-3xl border border-slate-200 p-6">
-                    <h3 class="font-bold mb-3">Daily Feedback / What Happened</h3>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="text-xs font-bold text-slate-600">General House Notes</label>
-                            <textarea id="daily-general-notes" rows="3" class="w-full border border-slate-300 rounded-2xl p-3 text-sm" placeholder="Overall how the day went..."></textarea>
-                        </div>
-                        <button onclick="saveDailyFeedback()" class="warm-btn px-6 h-10 text-white text-sm rounded-2xl">Save Daily Feedback</button>
-                    </div>
+                <div class="bg-white rounded-3xl border p-6">
+                    <h3 class="font-bold mb-2">Daily Feedback / What Happened Today</h3>
+                    <textarea id="daily-general-notes" rows="6" class="w-full border rounded-2xl p-4 text-sm" placeholder="Write what the kids did, how the day went..."></textarea>
+                    <button onclick="saveDailyFeedback()" class="mt-3 warm-btn px-6 h-10 text-white rounded-2xl text-sm">Save Feedback</button>
                 </div>
             </div>
         </div>
 
-        <!-- INCIDENTS (NEW) -->
+        <!-- INCIDENTS -->
         <div id="section-incidents" class="section">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-3xl font-semibold tracking-tight">Incident Reports</h2>
-                    <p class="text-slate-600">Log and track any incidents</p>
-                </div>
-                <button onclick="showAddIncidentModal()" class="warm-btn flex items-center gap-x-2 text-white px-6 h-12 rounded-3xl font-semibold text-sm">
-                    <i class="fa-solid fa-plus"></i> <span>Log New Incident</span>
-                </button>
+            <div class="flex justify-between mb-4">
+                <h2 class="text-2xl font-semibold">Incident Reports</h2>
+                <button onclick="showAddIncidentModal()" class="warm-btn px-5 h-10 text-white rounded-2xl text-sm">+ Log Incident</button>
             </div>
-
-            <div class="bg-white rounded-3xl border border-slate-200 p-2">
-                <table class="w-full">
-                    <thead>
-                        <tr class="text-xs font-bold text-slate-600 border-b">
-                            <th class="px-5 py-4 text-left">Date</th>
-                            <th class="px-5 py-4 text-left">Child</th>
-                            <th class="px-5 py-4 text-left">Description</th>
-                            <th class="px-5 py-4 text-left">Action Taken</th>
-                        </tr>
-                    </thead>
-                    <tbody id="incidents-table-body" class="text-sm divide-y"></tbody>
-                </table>
+            <div class="bg-white rounded-3xl border p-2">
+                <table class="w-full"><tbody id="incidents-table-body" class="text-sm"></tbody></table>
             </div>
         </div>
 
         <!-- MEDICINE -->
         <div id="section-medicine" class="section">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-3xl font-semibold tracking-tight">Medicine &amp; Daily Care</h2>
-                </div>
-                <button onclick="showLogMedicineModal()" class="warm-btn px-6 h-12 text-white rounded-3xl flex items-center gap-x-2 font-semibold text-sm">
-                    <i class="fa-solid fa-plus"></i> <span>Log Medicine</span>
-                </button>
-            </div>
-            <div class="bg-white rounded-3xl border border-slate-200 p-6">
-                <div id="medicine-recent-logs" class="space-y-2 text-sm"></div>
-            </div>
+            <h2 class="text-2xl font-semibold mb-4">Medicine &amp; Care</h2>
+            <button onclick="showLogMedicineModal()" class="warm-btn px-6 h-10 text-white rounded-2xl text-sm">Log Medicine Given</button>
+            <div id="medicine-recent-logs" class="mt-4 text-sm"></div>
         </div>
 
         <!-- COMMUNICATIONS -->
         <div id="section-communications" class="section">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-3xl font-semibold tracking-tight">Communications &amp; Quick Links</h2>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Quick App Links -->
-                <div class="bg-white border border-slate-200 rounded-3xl p-6">
-                    <h3 class="font-bold mb-4">Quick Open Apps</h3>
-                    <div class="space-y-3">
-                        <button onclick="window.open('https://app.teamup.com/', '_blank')" class="w-full flex items-center justify-between px-5 py-3 bg-emerald-50 hover:bg-emerald-100 rounded-2xl text-left">
-                            <div class="flex items-center gap-x-3"><i class="fa-solid fa-calendar-check text-emerald-600 text-xl"></i><span class="font-semibold">TeamUp</span></div>
-                            <span class="text-xs text-emerald-600">Open →</span>
-                        </button>
-                        <button onclick="window.open('https://slack.com', '_blank')" class="w-full flex items-center justify-between px-5 py-3 bg-purple-50 hover:bg-purple-100 rounded-2xl text-left">
-                            <div class="flex items-center gap-x-3"><i class="fa-brands fa-slack text-purple-600 text-xl"></i><span class="font-semibold">Slack</span></div>
-                            <span class="text-xs text-purple-600">Open →</span>
-                        </button>
-                        <button onclick="window.open('https://outlook.office.com', '_blank')" class="w-full flex items-center justify-between px-5 py-3 bg-blue-50 hover:bg-blue-100 rounded-2xl text-left">
-                            <div class="flex items-center gap-x-3"><i class="fa-solid fa-envelope text-blue-600 text-xl"></i><span class="font-semibold">Outlook</span></div>
-                            <span class="text-xs text-blue-600">Open →</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="md:col-span-2 bg-white border border-slate-200 rounded-3xl p-6">
-                    <h3 class="font-bold mb-4">Phone Call Log</h3>
-                    <button onclick="showLogCallModal()" class="warm-btn px-6 h-10 text-white text-sm rounded-2xl mb-4">Log New Call</button>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead class="text-xs text-slate-500 border-b">
-                                <tr>
-                                    <th class="text-left py-2 px-3">Date</th>
-                                    <th class="text-left py-2 px-3">Child</th>
-                                    <th class="text-left py-2 px-3">Guardian Called</th>
-                                    <th class="text-center py-2 px-3">Outcome</th>
-                                </tr>
-                            </thead>
-                            <tbody id="phone-logs-table" class="text-xs divide-y"></tbody>
-                        </table>
-                    </div>
-                </div>
+            <h2 class="text-2xl font-semibold mb-4">Quick Links</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button onclick="window.open('https://app.teamup.com/', '_blank')" class="p-4 bg-emerald-50 rounded-2xl text-left font-semibold">Open TeamUp</button>
+                <button onclick="window.open('https://slack.com', '_blank')" class="p-4 bg-purple-50 rounded-2xl text-left font-semibold">Open Slack</button>
+                <button onclick="window.open('https://outlook.office.com', '_blank')" class="p-4 bg-blue-50 rounded-2xl text-left font-semibold">Open Outlook</button>
             </div>
         </div>
 
         <!-- REPORTS -->
         <div id="section-reports" class="section">
-            <div class="mb-6">
-                <h2 class="text-3xl font-semibold tracking-tight">Reports &amp; Summaries</h2>
-            </div>
-            <div class="bg-white border border-teal-200 rounded-3xl p-8">
-                <h3 class="font-bold text-2xl tracking-tight">Sunday Night Turnover Note</h3>
-                <p class="text-slate-600 mt-2">Automatically compiles kids, chores, medicine, calls, daily notes and incidents.</p>
-                <button onclick="generateSundayReport()" class="mt-6 warm-btn px-8 h-12 text-white rounded-3xl flex items-center justify-center gap-x-2 font-semibold">
-                    <i class="fa-solid fa-magic"></i> <span>Generate Full Report</span>
-                </button>
-            </div>
+            <button onclick="generateSundayReport()" class="warm-btn px-8 h-12 text-white rounded-3xl">Generate Sunday Turnover Report</button>
         </div>
 
         <!-- WISHLIST -->
         <div id="section-wishlist" class="section">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-3xl font-semibold tracking-tight">Annual Wishlist</h2>
-                </div>
-                <button onclick="showAddWishModal()" class="warm-btn px-6 h-12 text-white rounded-3xl flex items-center gap-x-2 font-semibold text-sm">
-                    <i class="fa-solid fa-plus"></i> <span>Add Wish</span>
-                </button>
-            </div>
-            <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden">
-                <table class="w-full">
-                    <thead class="bg-slate-50">
-                        <tr class="text-xs font-bold text-slate-600">
-                            <th class="px-6 py-4 text-left">Child</th>
-                            <th class="px-6 py-4 text-left">Wish / Item</th>
-                            <th class="px-6 py-4 text-left">Link</th>
-                            <th class="px-6 py-4 text-right">Price</th>
-                            <th class="px-6 py-4"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="wishlist-table-body" class="text-sm divide-y"></tbody>
-                </table>
+            <h2 class="text-2xl font-semibold mb-4">Wishlist</h2>
+            <button onclick="showAddWishModal()" class="warm-btn px-5 h-10 text-white rounded-2xl text-sm">+ Add Wish</button>
+            <div id="wishlist-table-body" class="mt-4"></div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="kid-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
+        <div class="bg-white w-full max-w-lg mx-4 rounded-3xl p-7">
+            <h3 class="text-xl font-semibold mb-4">Add/Edit Child</h3>
+            <input id="kid-name" placeholder="Full Name" class="w-full border p-3 rounded-2xl mb-3">
+            <input id="kid-age" placeholder="Age" type="number" class="w-full border p-3 rounded-2xl mb-3">
+            <input id="kid-guardian" placeholder="Main Guardian" class="w-full border p-3 rounded-2xl mb-3">
+            <input id="kid-phone" placeholder="Phone" class="w-full border p-3 rounded-2xl mb-3">
+            <textarea id="kid-notes" placeholder="Other guardians, phones, notes..." class="w-full border p-3 rounded-2xl mb-3" rows="4"></textarea>
+            <div class="flex justify-end gap-x-3 mt-4">
+                <button onclick="hideKidModal()" class="px-6 py-2">Cancel</button>
+                <button onclick="saveKid()" class="warm-btn px-6 py-2 text-white rounded-2xl">Save</button>
             </div>
         </div>
     </div>
 
-    <!-- Modals (Add Kid, Log Call, Medicine, Chore, Wish, Incident) -->
-    <!-- Add Kid Modal -->
-    <div id="kid-modal" onclick="if (event.target.id === 'kid-modal') hideKidModal()" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
-        <div onclick="event.stopImmediatePropagation()" class="bg-white w-full max-w-lg mx-4 rounded-3xl shadow-xl modal">
-            <div class="px-7 pt-7 pb-5">
-                <h3 id="kid-modal-title" class="text-2xl font-semibold">Add New Child</h3>
-                <div class="mt-6 space-y-5">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label class="block text-xs font-bold text-slate-600 mb-1.5">CHILD'S FULL NAME</label>
-                            <input id="kid-name" type="text" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm"></div>
-                        <div><label class="block text-xs font-bold text-slate-600 mb-1.5">AGE</label>
-                            <input id="kid-age" type="number" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm"></div>
-                    </div>
-                    <div><label class="block text-xs font-bold text-slate-600 mb-1.5">MAIN GUARDIAN</label>
-                        <input id="kid-guardian" type="text" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm"></div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label class="block text-xs font-bold text-slate-600 mb-1.5">PHONE</label>
-                            <input id="kid-phone" type="tel" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm"></div>
-                        <div><label class="block text-xs font-bold text-slate-600 mb-1.5">EMAIL</label>
-                            <input id="kid-email" type="email" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm"></div>
-                    </div>
-                    <div><label class="block text-xs font-bold text-slate-600 mb-1.5">ADDITIONAL CONTACTS / NOTES</label>
-                        <textarea id="kid-notes" rows="3" class="w-full border border-slate-300 px-4 py-3 rounded-2xl text-sm" placeholder="Aunts, uncles, grandparents, other phones, special instructions..."></textarea></div>
-                </div>
-            </div>
-            <div class="px-7 py-5 bg-slate-50 flex justify-end gap-x-3 rounded-b-3xl">
-                <button onclick="hideKidModal()" class="px-6 h-11 text-sm font-semibold text-slate-600 hover:bg-slate-200 rounded-2xl">Cancel</button>
-                <button id="kid-modal-save-btn" onclick="saveKid()" class="warm-btn px-8 h-11 text-white text-sm font-bold rounded-2xl">Save Child</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Other modals (Log Call, Medicine, Chore, Wish, Incident) - simplified for length but fully functional -->
-    <!-- Log Call Modal -->
-    <div id="call-modal" onclick="if (event.target.id === 'call-modal') hideCallModal()" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
-        <div onclick="event.stopImmediatePropagation()" class="bg-white w-full max-w-md mx-4 rounded-3xl shadow-xl modal">
-            <div class="px-7 pt-7">
-                <h3 class="text-2xl font-semibold">Log Guardian Call</h3>
-                <div class="mt-6 space-y-5">
-                    <div><label class="block text-xs font-bold text-slate-600 mb-1.5">CHILD</label>
-                        <select id="call-kid-select" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm"></select></div>
-                    <div><label class="block text-xs font-bold text-slate-600 mb-1.5">GUARDIAN YOU CALLED (name)</label>
-                        <input id="call-guardian-name" type="text" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm" placeholder="e.g. Aunt Patricia Hillman"></div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label class="block text-xs font-bold text-slate-600 mb-1.5">DATE</label>
-                            <input id="call-date" type="date" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm"></div>
-                        <div><label class="block text-xs font-bold text-slate-600 mb-1.5">OUTCOME</label>
-                            <select id="call-outcome" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm">
-                                <option value="Good">Good / Positive</option>
-                                <option value="Okay">Okay / Neutral</option>
-                                <option value="Needs Attention">Needs Attention</option>
-                                <option value="Not Well">Not Well / Concerning</option>
-                            </select></div>
-                    </div>
-                    <div><label class="block text-xs font-bold text-slate-600 mb-1.5">NOTES</label>
-                        <textarea id="call-notes" rows="3" class="w-full border border-slate-300 px-4 py-3 rounded-2xl text-sm"></textarea></div>
-                </div>
-            </div>
-            <div class="px-7 py-5 bg-slate-50 flex justify-end gap-x-3 rounded-b-3xl">
-                <button onclick="hideCallModal()" class="px-6 h-11 text-sm font-semibold text-slate-600 hover:bg-slate-200 rounded-2xl">Cancel</button>
-                <button onclick="savePhoneCall()" class="warm-btn px-8 h-11 text-white text-sm font-bold rounded-2xl">Save Call</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Incident Modal -->
-    <div id="incident-modal" onclick="if (event.target.id === 'incident-modal') hideIncidentModal()" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
-        <div onclick="event.stopImmediatePropagation()" class="bg-white w-full max-w-md mx-4 rounded-3xl shadow-xl modal">
-            <div class="px-7 pt-7">
-                <h3 class="text-2xl font-semibold">Log Incident</h3>
-                <div class="mt-6 space-y-5">
-                    <div><label class="block text-xs font-bold text-slate-600 mb-1.5">CHILD</label>
-                        <select id="incident-kid-select" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm"></select></div>
-                    <div><label class="block text-xs font-bold text-slate-600 mb-1.5">DATE</label>
-                        <input id="incident-date" type="date" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm"></div>
-                    <div><label class="block text-xs font-bold text-slate-600 mb-1.5">WHAT HAPPENED</label>
-                        <textarea id="incident-description" rows="3" class="w-full border border-slate-300 px-4 py-3 rounded-2xl text-sm"></textarea></div>
-                    <div><label class="block text-xs font-bold text-slate-600 mb-1.5">ACTION TAKEN</label>
-                        <textarea id="incident-action" rows="2" class="w-full border border-slate-300 px-4 py-3 rounded-2xl text-sm"></textarea></div>
-                </div>
-            </div>
-            <div class="px-7 py-5 bg-slate-50 flex justify-end gap-x-3 rounded-b-3xl">
-                <button onclick="hideIncidentModal()" class="px-6 h-11 text-sm font-semibold text-slate-600 hover:bg-slate-200 rounded-2xl">Cancel</button>
-                <button onclick="saveIncident()" class="warm-btn px-8 h-11 text-white text-sm font-bold rounded-2xl">Save Incident</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast -->
-    <div id="toast" class="hidden fixed bottom-5 right-5 bg-teal-900 text-white px-6 py-3.5 rounded-3xl flex items-center gap-x-3 shadow-xl z-[200]">
-        <i class="fa-solid fa-check-circle text-emerald-400"></i>
-        <span id="toast-message" class="font-medium text-sm"></span>
+    <div id="toast" class="hidden fixed bottom-5 right-5 bg-teal-900 text-white px-6 py-3 rounded-3xl flex items-center gap-x-2">
+        <span id="toast-message"></span>
     </div>
 
     <script>
-        // ==================== STATE ====================
         let state = {
             kids: [],
             chores: [],
             medicineLogs: [],
             phoneLogs: [],
-            dailyNotes: [],
-            wishItems: [],
             incidents: [],
+            wishItems: [],
             todaySchedule: "",
-            dailyGeneralNotes: "",
-            masterChores: ["Make bed", "Brush teeth & wash face", "Clean room", "Help set the table", "Sweep floor", "Homework time", "Evening prayer prep"],
-            settings: { lastResetDate: null }
+            dailyGeneralNotes: ""
         };
 
         function saveState() { localStorage.setItem('lorensCottageState', JSON.stringify(state)); }
+
         function loadState() {
             const saved = localStorage.getItem('lorensCottageState');
             if (saved) {
-                state = { ...state, ...JSON.parse(saved) };
+                state = JSON.parse(saved);
             } else {
                 seedRealData();
             }
         }
 
         function seedRealData() {
-            const today = new Date().toISOString().split('T')[0];
             state.kids = [
-                { id: Date.now()+101, name: "Xochtli Ordaz", age: 13, guardian: "Luis Ordaz (Dad)", phone: "602-800-8717", email: "", notes: "Uncle Jeremy: 602-551-4186\nTia Nancy: (602) 641-1658\nGrandparents: 623-920-5553\nTemp foster Jim: 480-510-5237 / Julie: 602-316-9612\nRoseanne Garcia - Not approved", callLogs: [] },
-                { id: Date.now()+102, name: "Melody Hernandez", age: 12, guardian: "Maritza Hernandez (Mom)", phone: "(623) 986-3010", email: "ritza0812@gmail.com", notes: "Primo (Uncle): (602) 466-4642\nLuna (sister): (928) 231-6667\nElena Sevilla - Unapproved", callLogs: [] },
-                { id: Date.now()+103, name: "A'Niya Jackson", age: 12, guardian: "Shantaze Jackson (Mom)", phone: "623-764-7040", email: "shantazejackson12@gmail.com", notes: "Desaree Rily (Aunt): (785) 554-8349\nKeshunda Jackson: (602) 883-6397\nSpecial number to use: (480) 442-3270", callLogs: [] },
-                { id: Date.now()+104, name: "Truth Sutton", age: 7, guardian: "Aleesa Baker (Mom)", phone: "602-349-8846", email: "bakeraleesa@gmail.com", notes: "Joseph Barrientes (Emergency): (412) 478-8137", callLogs: [] },
-                { id: Date.now()+105, name: "Gianna Taylor", age: 13, guardian: "Dan Taylor", phone: "(480) 220-7392", email: "", notes: "GiGi Taylor: (480) 263-1844\nRuss Taylor: 480-707-3647", callLogs: [] }
+                { id: 101, name: "Xochtli Ordaz", age: 13, guardian: "Luis Ordaz (Dad)", phone: "602-800-8717", notes: "Uncle Jeremy: 602-551-4186\nTia Nancy: (602) 641-1658\nGrandparents: 623-920-5553\nRoseanne Garcia - Not approved", callLogs: [] },
+                { id: 102, name: "Melody Hernandez", age: 12, guardian: "Maritza Hernandez (Mom)", phone: "(623) 986-3010", notes: "Primo (Uncle): (602) 466-4642\nLuna (sister): (928) 231-6667\nElena Sevilla - Unapproved", callLogs: [] },
+                { id: 103, name: "A'Niya Jackson", age: 12, guardian: "Shantaze Jackson (Mom)", phone: "623-764-7040", notes: "Desaree Rily (Aunt)\nSpecial number: (480) 442-3270", callLogs: [] },
+                { id: 104, name: "Truth Sutton", age: 7, guardian: "Aleesa Baker (Mom)", phone: "602-349-8846", notes: "Joseph Barrientes (Emergency): (412) 478-8137", callLogs: [] },
+                { id: 105, name: "Gianna Taylor", age: 13, guardian: "Dan Taylor", phone: "(480) 220-7392", notes: "GiGi Taylor: (480) 263-1844\nRuss Taylor: 480-707-3647", callLogs: [] }
             ];
-            state.chores = [
-                { id: Date.now()+201, name: "Make bed", assignedKidId: state.kids[0].id, status: "pending", notes: "", lastUpdated: today },
-                { id: Date.now()+202, name: "Brush teeth & wash face", assignedKidId: state.kids[1].id, status: "pending", notes: "", lastUpdated: today }
-            ];
-            state.settings.lastResetDate = today;
             saveState();
         }
 
-        // ==================== NAVIGATION ====================
         function navigateTo(section) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            const target = document.getElementById('section-' + section);
-            if (target) target.classList.add('active');
-
-            document.querySelectorAll('[id^="nav-"]').forEach(nav => nav.classList.remove('bg-teal-800', 'text-white'));
-            const activeNav = document.getElementById('nav-' + section);
-            if (activeNav) activeNav.classList.add('bg-teal-800', 'text-white');
-
-            const titles = {
-                'dashboard': ['Dashboard', 'Welcome back to Loren\'s Cottage'],
-                'children': ['Children Directory', 'All current residents with full contact details'],
-                'chores': ['Daily Chores', 'Fully flexible — change anytime'],
-                'daily-log': ['Daily Log & Feedback', 'What the kids did today + TeamUp schedule'],
-                'incidents': ['Incident Reports', 'Log and track any incidents'],
-                'medicine': ['Medicine & Daily Care', 'Track medication rounds'],
-                'communications': ['Communications & Quick Links', 'Phone logs + one-click app access'],
-                'reports': ['Reports & Summaries', 'Sunday turnover and more'],
-                'wishlist': ['Annual Wishlist', '$0 — $150 gifts']
-            };
-            if (titles[section]) {
-                document.getElementById('page-title').innerHTML = titles[section][0];
-                document.getElementById('page-subtitle').innerHTML = titles[section][1];
-            }
-
+            document.getElementById('section-' + section).classList.add('active');
+            
             if (section === 'children') renderKidsTable();
             if (section === 'chores') renderChoresTable();
-            if (section === 'medicine') renderMedicineRecentLogs();
-            if (section === 'communications') renderPhoneLogsTable();
-            if (section === 'wishlist') renderWishlistTable();
             if (section === 'incidents') renderIncidentsTable();
-            if (section === 'dashboard') updateDashboardStats();
         }
 
-        function updateDashboardStats() {
-            document.getElementById('dash-kids-count').textContent = state.kids.length;
-            const pending = state.chores.filter(c => c.status === 'pending').length;
-            document.getElementById('dash-chores-pending').textContent = pending;
-            document.getElementById('dash-meds-due').textContent = Math.max(2, state.medicineLogs.length);
-        }
-
-        // ==================== KIDS ====================
         function renderKidsTable() {
             const tbody = document.getElementById('kids-table-body');
             tbody.innerHTML = '';
             state.kids.forEach(kid => {
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-teal-50/50 cursor-pointer';
-                tr.onclick = () => showKidDetail(kid.id);
+                tr.className = 'hover:bg-teal-50 cursor-pointer';
                 tr.innerHTML = `
-                    <td class="px-6 py-4 font-semibold">${kid.name}</td>
-                    <td class="px-6 py-4 text-slate-600">${kid.age} yrs</td>
-                    <td class="px-6 py-4">${kid.guardian || '—'}</td>
-                    <td class="px-6 py-4 font-mono text-xs">${kid.phone || '—'}</td>
-                    <td class="px-6 py-4 text-right">
-                        <button onclick="event.stopImmediatePropagation(); showLogCallModal(${kid.id})" class="text-xs px-3 py-1.5 border border-teal-200 hover:bg-teal-50 rounded-xl text-teal-700">Log Call</button>
-                    </td>
+                    <td class="px-6 py-3 font-semibold">${kid.name}</td>
+                    <td class="px-6 py-3">${kid.age} yrs</td>
+                    <td class="px-6 py-3">${kid.guardian}</td>
+                    <td class="px-6 py-3 font-mono text-xs">${kid.phone}</td>
                 `;
+                tr.onclick = () => showKidDetail(kid.id);
                 tbody.appendChild(tr);
             });
         }
 
-        function showKidDetail(kidId) {
-            const kid = state.kids.find(k => k.id === kidId);
+        function showKidDetail(id) {
+            const kid = state.kids.find(k => k.id === id);
             if (!kid) return;
-
-            const modalHTML = `
-                <div onclick="this.remove()" class="fixed inset-0 bg-black/70 flex items-center justify-center z-[110] p-4">
-                    <div onclick="event.stopImmediatePropagation()" class="bg-white w-full max-w-lg mx-4 rounded-3xl overflow-hidden modal">
-                        <div class="px-7 pt-7 pb-5">
-                            <h3 class="text-3xl font-semibold tracking-tight">${kid.name}</h3>
-                            <p class="text-teal-700">${kid.age} years old</p>
-                            
-                            <div class="mt-6">
-                                <div class="text-xs uppercase tracking-widest text-slate-500 font-bold mb-1">MAIN GUARDIAN</div>
-                                <div class="font-semibold">${kid.guardian || 'Not listed'}</div>
-                                ${kid.phone ? `<div class="mt-0.5"><a href="tel:${kid.phone}" class="font-mono text-teal-700">${kid.phone}</a></div>` : ''}
-                                ${kid.email ? `<div class="text-xs text-slate-500">${kid.email}</div>` : ''}
-                            </div>
-
-                            ${kid.notes ? `
-                            <div class="mt-5">
-                                <div class="text-xs uppercase tracking-widest text-slate-500 font-bold mb-1">OTHER FAMILY / CONTACTS</div>
-                                <div class="bg-slate-50 rounded-2xl p-4 text-sm whitespace-pre-line">${kid.notes}</div>
-                            </div>` : ''}
-                        </div>
-                        <div class="px-7 py-5 bg-slate-50 flex justify-end gap-x-3">
-                            <button onclick="event.target.closest('.fixed').remove(); editKid(${kid.id})" class="px-6 h-11 text-sm font-semibold border border-slate-300 hover:bg-white rounded-2xl">Edit</button>
-                            <button onclick="event.target.closest('.fixed').remove()" class="px-6 h-11 text-sm font-semibold bg-teal-800 text-white rounded-2xl">Close</button>
-                        </div>
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-[110] p-4';
+            modal.innerHTML = `
+                <div class="bg-white w-full max-w-lg rounded-3xl p-7">
+                    <h3 class="text-2xl font-semibold">${kid.name}</h3>
+                    <p class="text-teal-700">${kid.age} years old</p>
+                    
+                    <div class="mt-5">
+                        <div class="text-xs text-slate-500 font-bold">MAIN GUARDIAN</div>
+                        <div class="font-semibold">${kid.guardian}</div>
+                        <div class="font-mono text-teal-700">${kid.phone}</div>
+                    </div>
+                    
+                    ${kid.notes ? `
+                    <div class="mt-5">
+                        <div class="text-xs text-slate-500 font-bold">OTHER FAMILY / CONTACTS</div>
+                        <div class="bg-slate-50 rounded-2xl p-4 text-sm whitespace-pre-line">${kid.notes}</div>
+                    </div>` : ''}
+                    
+                    <div class="mt-6 flex justify-end">
+                        <button onclick="this.closest('.fixed').remove()" class="px-6 py-2 bg-teal-800 text-white rounded-2xl">Close</button>
                     </div>
                 </div>
             `;
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            document.body.appendChild(modal);
         }
 
-        // Add / Edit Kid functions (simplified)
-        let editingKidId = null;
-        function showAddKidModal() { editingKidId = null; /* open modal and clear form */ document.getElementById('kid-modal').classList.remove('hidden'); document.getElementById('kid-modal').classList.add('flex'); }
-        function hideKidModal() { document.getElementById('kid-modal').classList.remove('flex'); document.getElementById('kid-modal').classList.add('hidden'); }
-        function saveKid() { /* full implementation as before - saves to state and re-renders */ hideKidModal(); renderKidsTable(); showToast("Child saved"); }
+        function showAddKidModal() {
+            document.getElementById('kid-modal').classList.remove('hidden');
+        }
+        function hideKidModal() {
+            document.getElementById('kid-modal').classList.add('hidden');
+        }
+        function saveKid() {
+            const name = document.getElementById('kid-name').value.trim();
+            if (!name) return alert("Name is required");
+            
+            state.kids.push({
+                id: Date.now(),
+                name: name,
+                age: document.getElementById('kid-age').value,
+                guardian: document.getElementById('kid-guardian').value,
+                phone: document.getElementById('kid-phone').value,
+                notes: document.getElementById('kid-notes').value,
+                callLogs: []
+            });
+            saveState();
+            hideKidModal();
+            renderKidsTable();
+        }
 
-        // ==================== DAILY LOG & INCIDENTS ====================
+        function renderChoresTable() {
+            const tbody = document.getElementById('chores-table-body');
+            tbody.innerHTML = '<tr><td class="px-6 py-8 text-center text-slate-400">Chores system ready. Add new chores using the button above.</td></tr>';
+        }
+
+        function showAddChoreModal() {
+            const name = prompt("Chore name:");
+            if (!name) return;
+            state.chores = state.chores || [];
+            state.chores.push({ id: Date.now(), name: name, assignedKidId: null, status: "pending", notes: "" });
+            saveState();
+            renderChoresTable();
+        }
+
+        function renderIncidentsTable() {
+            const tbody = document.getElementById('incidents-table-body');
+            if (!state.incidents || state.incidents.length === 0) {
+                tbody.innerHTML = '<tr><td class="px-6 py-8 text-center text-slate-400">No incidents logged yet.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = state.incidents.map(inc => `
+                <tr>
+                    <td class="px-5 py-3">${inc.date}</td>
+                    <td class="px-5 py-3">${inc.childName}</td>
+                    <td class="px-5 py-3">${inc.description}</td>
+                </tr>
+            `).join('');
+        }
+
+        function showAddIncidentModal() {
+            const childName = prompt("Child name:");
+            const description = prompt("What happened?");
+            if (!childName || !description) return;
+            
+            state.incidents = state.incidents || [];
+            state.incidents.push({
+                id: Date.now(),
+                date: new Date().toISOString().split('T')[0],
+                childName: childName,
+                description: description,
+                action: ""
+            });
+            saveState();
+            renderIncidentsTable();
+        }
+
         function saveDailySchedule() {
             state.todaySchedule = document.getElementById('today-schedule').value;
             saveState();
-            showToast("Today's schedule saved");
+            alert("Today's schedule saved successfully!");
         }
+
         function saveDailyFeedback() {
             state.dailyGeneralNotes = document.getElementById('daily-general-notes').value;
             saveState();
-            showToast("Daily feedback saved");
+            alert("Daily feedback saved!");
         }
 
-        let editingIncidentId = null;
-        function showAddIncidentModal() {
-            document.getElementById('incident-modal').classList.remove('hidden');
-            document.getElementById('incident-modal').classList.add('flex');
-            // populate kid select
+        function generateSundayReport() {
+            let report = `LOREN'S COTTAGE - SUNDAY TURNOVER\n\n`;
+            report += `Kids in care: ${state.kids.length}\n`;
+            report += `Daily Notes: ${state.dailyGeneralNotes || "None"}\n`;
+            report += `Incidents this period: ${state.incidents ? state.incidents.length : 0}\n\n`;
+            report += `Prepared by Dramane & Tiffany`;
+            
+            navigator.clipboard.writeText(report);
+            alert("Sunday report copied to clipboard! You can now paste it into WhatsApp or email.");
         }
-        function hideIncidentModal() { document.getElementById('incident-modal').classList.remove('flex'); document.getElementById('incident-modal').classList.add('hidden'); }
-        function saveIncident() { /* save logic */ hideIncidentModal(); renderIncidentsTable(); showToast("Incident logged"); }
-        function renderIncidentsTable() { /* render incidents table */ }
 
-        // ==================== OTHER EXISTING FUNCTIONS (Chores, Medicine, Phone Logs, Wishlist, Reports, WhatsApp, etc.) ====================
-        // (All previous working functions for chores, medicine, phone logs, wishlist, Sunday report, etc. are included in the full version)
-
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-message').innerHTML = message;
-            toast.style.display = 'flex';
-            setTimeout(() => { toast.style.display = 'none'; }, 2600);
+        function quickWhatsAppMessage() {
+            const text = prompt("What message would you like to send?");
+            if (text) {
+                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+            }
         }
 
         function initializeApp() {
             loadState();
-            updateDashboardStats();
             renderKidsTable();
             renderChoresTable();
-            renderMedicineRecentLogs();
-            renderPhoneLogsTable();
-            renderWishlistTable();
             renderIncidentsTable();
-
+            
             // Load saved daily data
             if (state.todaySchedule) document.getElementById('today-schedule').value = state.todaySchedule;
             if (state.dailyGeneralNotes) document.getElementById('daily-general-notes').value = state.dailyGeneralNotes;
-
+            
             document.getElementById('section-dashboard').classList.add('active');
-            document.getElementById('nav-dashboard').classList.add('bg-teal-800', 'text-white');
         }
 
         window.onload = initializeApp;
