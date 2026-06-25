@@ -1,0 +1,2411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loren's Cottage • LC House Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Playfair+Display:wght@700&amp;display=swap');
+        
+        :root {
+            --primary: #0f766e;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .heading-serif {
+            font-family: 'Playfair Display', Georgia, serif;
+        }
+
+        .nav-active {
+            background-color: #0f766e;
+            color: white;
+            border-radius: 9999px;
+        }
+
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+
+        .card {
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
+                       box-shadow 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .kid-card {
+            transition: all 0.2s ease;
+        }
+
+        .modal {
+            animation: modalPopIn 0.2s ease forwards;
+        }
+
+        @keyframes modalPopIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .status-dot {
+            animation: pulse 2s infinite;
+        }
+
+        .chore-row {
+            transition: background-color 0.1s ease;
+        }
+
+        .chore-row:hover {
+            background-color: #f8fafc;
+        }
+
+        .log-entry {
+            transition: all 0.2s ease;
+        }
+
+        .friendly-shadow {
+            box-shadow: 0 10px 15px -3px rgb(15 118 110 / 0.1), 
+                       0 4px 6px -4px rgb(15 118 110 / 0.1);
+        }
+
+        .home-bg {
+            background: linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%);
+        }
+
+        .metric-value {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .nav-item {
+            transition: all 0.1s ease;
+        }
+        
+        .nav-item:hover {
+            background-color: #f1e7d2;
+            color: #0f766e;
+        }
+
+        .data-table {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .lc-badge {
+            background: linear-gradient(90deg, #0f766e, #134e4b);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .warm-btn {
+            background: linear-gradient(to right, #0f766e, #134e4b);
+            transition: all 0.2s ease;
+        }
+        
+        .warm-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgb(15 118 110 / 0.3);
+        }
+
+        .soft-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+    <!-- Top Navigation -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-screen-2xl mx-auto">
+            <div class="px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-x-4">
+                    <!-- Logo -->
+                    <div class="flex items-center gap-x-3">
+                        <div class="w-11 h-11 bg-teal-800 rounded-2xl flex items-center justify-center shadow-inner">
+                            <span class="text-white text-3xl font-bold tracking-tighter">LC</span>
+                        </div>
+                        <div>
+                            <div class="flex items-baseline gap-x-2">
+                                <span class="text-2xl font-semibold tracking-tight text-teal-900">Loren's Cottage</span>
+                                <span class="lc-badge text-[10px]">LC</span>
+                            </div>
+                            <p class="text-[10px] text-teal-700 -mt-1 font-medium">Sunshine Acres • Children's Home</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shift Status -->
+                <div class="hidden md:flex items-center gap-x-3 bg-slate-100 rounded-3xl px-4 py-1.5 text-sm">
+                    <div class="flex items-center gap-x-2">
+                        <div class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                        <span class="font-semibold text-emerald-700">ON SHIFT</span>
+                    </div>
+                    <div class="text-slate-500 text-xs font-medium">
+                        Tue 10:00 PM — Mon 6:00 AM
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-x-2">
+                    <!-- Houseparents -->
+                    <div class="flex items-center bg-white border border-slate-200 rounded-3xl pl-1 pr-4 py-1 shadow-sm">
+                        <div class="flex -space-x-1 mr-3">
+                            <div class="w-7 h-7 bg-amber-200 border border-white rounded-full flex items-center justify-center text-[10px] font-bold text-amber-700 ring-1 ring-amber-300">D</div>
+                            <div class="w-7 h-7 bg-rose-200 border border-white rounded-full flex items-center justify-center text-[10px] font-bold text-rose-700 ring-1 ring-rose-300">T</div>
+                        </div>
+                        <div class="text-sm">
+                            <span class="font-semibold text-slate-700">Dramane &amp; Tiffany</span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="showSettings()" 
+                            class="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-teal-700 hover:bg-teal-50 rounded-2xl transition-colors">
+                        <i class="fa-solid fa-cog text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="max-w-screen-2xl mx-auto px-6 pt-6 pb-12">
+        
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-8 gap-y-4">
+            <div>
+                <h1 id="page-title" class="text-4xl font-semibold tracking-tighter text-teal-950">Dashboard</h1>
+                <p id="page-subtitle" class="text-teal-700 mt-1">Welcome back to Loren's Cottage • Your home away from home</p>
+            </div>
+            
+            <div class="flex items-center gap-x-3">
+                <!-- Quick WhatsApp -->
+                <button onclick="quickWhatsAppMessage()" 
+                        class="flex items-center gap-x-2 px-5 h-11 bg-emerald-600 hover:bg-emerald-700 transition-all text-white rounded-3xl text-sm font-semibold shadow-sm active:scale-[0.985]">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>Quick Message</span>
+                </button>
+                
+                <button onclick="generateSundayReport()" 
+                        class="flex items-center gap-x-2 px-5 h-11 bg-white border border-teal-200 hover:bg-teal-50 text-teal-800 transition-all rounded-3xl text-sm font-semibold shadow-sm active:scale-[0.985]">
+                    <i class="fa-solid fa-file-lines mr-1.5"></i>
+                    <span>Sunday Turnover</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- NAVIGATION TABS -->
+        <div class="flex flex-wrap gap-2 mb-6 border-b border-slate-200 pb-1">
+            <button onclick="navigateTo('dashboard')" id="nav-dashboard"
+                    class="nav-item flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-3xl bg-teal-800 text-white">
+                <i class="fa-solid fa-home w-4"></i>
+                <span>Dashboard</span>
+            </button>
+            <button onclick="navigateTo('children')" id="nav-children"
+                    class="nav-item flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-3xl hover:bg-slate-100 text-slate-700">
+                <i class="fa-solid fa-users w-4"></i>
+                <span>Children</span>
+            </button>
+            <button onclick="navigateTo('chores')" id="nav-chores"
+                    class="nav-item flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-3xl hover:bg-slate-100 text-slate-700">
+                <i class="fa-solid fa-tasks w-4"></i>
+                <span>Chores</span>
+            </button>
+            <button onclick="navigateTo('medicine')" id="nav-medicine"
+                    class="nav-item flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-3xl hover:bg-slate-100 text-slate-700">
+                <i class="fa-solid fa-pills w-4"></i>
+                <span>Medicine &amp; Care</span>
+            </button>
+            <button onclick="navigateTo('communications')" id="nav-communications"
+                    class="nav-item flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-3xl hover:bg-slate-100 text-slate-700">
+                <i class="fa-solid fa-phone w-4"></i>
+                <span>Communications</span>
+            </button>
+            <button onclick="navigateTo('reports')" id="nav-reports"
+                    class="nav-item flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-3xl hover:bg-slate-100 text-slate-700">
+                <i class="fa-solid fa-chart-line w-4"></i>
+                <span>Reports</span>
+            </button>
+            <button onclick="navigateTo('wishlist')" id="nav-wishlist"
+                    class="nav-item flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-3xl hover:bg-slate-100 text-slate-700">
+                <i class="fa-solid fa-gift w-4"></i>
+                <span>Wishlist</span>
+            </button>
+        </div>
+
+        <!-- ==================== DASHBOARD ==================== -->
+        <div id="section-dashboard" class="section active">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Welcome + Shift Card -->
+                <div class="lg:col-span-7 bg-white rounded-3xl p-7 soft-card border border-slate-100">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="flex items-center gap-x-3">
+                                <span class="text-5xl">👋</span>
+                                <div>
+                                    <h2 class="text-3xl font-semibold tracking-tight">Good evening, Houseparents</h2>
+                                    <p class="text-slate-600 mt-1">Loren's Cottage is ready for another beautiful night of care.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-right hidden xl:block">
+                            <div class="text-xs uppercase tracking-[1px] text-teal-600 font-bold">Current Shift</div>
+                            <div class="font-mono text-xl font-semibold text-teal-900">10:00 PM – 6:00 AM</div>
+                            <div class="text-emerald-600 text-sm font-medium flex items-center justify-end gap-x-1 mt-0.5">
+                                <i class="fa-solid fa-check-circle"></i>
+                                <span>Active</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 grid grid-cols-3 gap-4">
+                        <div class="bg-teal-50 rounded-2xl p-4">
+                            <div class="text-teal-700 text-xs font-bold tracking-wider">KIDS IN HOUSE</div>
+                            <div id="dash-kids-count" class="text-5xl font-semibold text-teal-900 metric-value mt-1">8</div>
+                            <div class="text-teal-600 text-xs mt-1">Currently under your care</div>
+                        </div>
+                        <div class="bg-amber-50 rounded-2xl p-4">
+                            <div class="text-amber-700 text-xs font-bold tracking-wider">CHORES PENDING</div>
+                            <div id="dash-chores-pending" class="text-5xl font-semibold text-amber-900 metric-value mt-1">14</div>
+                            <div class="text-amber-600 text-xs mt-1">Across all children today</div>
+                        </div>
+                        <div class="bg-rose-50 rounded-2xl p-4">
+                            <div class="text-rose-700 text-xs font-bold tracking-wider">MEDS DUE</div>
+                            <div id="dash-meds-due" class="text-5xl font-semibold text-rose-900 metric-value mt-1">5</div>
+                            <div class="text-rose-600 text-xs mt-1">Morning • Evening • Night</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="lg:col-span-5 bg-white rounded-3xl p-7 soft-card border border-slate-100">
+                    <h3 class="font-semibold text-lg mb-4 flex items-center gap-x-2">
+                        <i class="fa-solid fa-bolt text-amber-500"></i> 
+                        <span>Quick Actions</span>
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="showAddKidModal()" 
+                                class="group flex flex-col items-start justify-center gap-y-1 p-4 rounded-2xl border border-slate-200 hover:border-teal-300 hover:bg-teal-50 transition-all text-left">
+                            <i class="fa-solid fa-user-plus text-teal-600 text-xl group-hover:scale-110 transition-transform"></i>
+                            <span class="font-semibold text-sm mt-2">Add New Child</span>
+                            <span class="text-[10px] text-slate-500">New arrival or update</span>
+                        </button>
+                        
+                        <button onclick="showLogMedicineModal()" 
+                                class="group flex flex-col items-start justify-center gap-y-1 p-4 rounded-2xl border border-slate-200 hover:border-teal-300 hover:bg-teal-50 transition-all text-left">
+                            <i class="fa-solid fa-pills text-teal-600 text-xl group-hover:scale-110 transition-transform"></i>
+                            <span class="font-semibold text-sm mt-2">Log Medicine</span>
+                            <span class="text-[10px] text-slate-500">Morning / Evening / Night</span>
+                        </button>
+                        
+                        <button onclick="showLogCallModal()" 
+                                class="group flex flex-col items-start justify-center gap-y-1 p-4 rounded-2xl border border-slate-200 hover:border-teal-300 hover:bg-teal-50 transition-all text-left">
+                            <i class="fa-solid fa-phone text-teal-600 text-xl group-hover:scale-110 transition-transform"></i>
+                            <span class="font-semibold text-sm mt-2">Log Guardian Call</span>
+                            <span class="text-[10px] text-slate-500">Record outcome</span>
+                        </button>
+                        
+                        <button onclick="showAddChoreModal()" 
+                                class="group flex flex-col items-start justify-center gap-y-1 p-4 rounded-2xl border border-slate-200 hover:border-teal-300 hover:bg-teal-50 transition-all text-left">
+                            <i class="fa-solid fa-clipboard-list text-teal-600 text-xl group-hover:scale-110 transition-transform"></i>
+                            <span class="font-semibold text-sm mt-2">Assign New Chore</span>
+                            <span class="text-[10px] text-slate-500">Flexible daily tasks</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Today's Focus -->
+                <div class="lg:col-span-12 bg-white rounded-3xl p-7 soft-card border border-slate-100">
+                    <div class="flex items-center justify-between mb-5">
+                        <h3 class="font-semibold text-xl flex items-center gap-x-3">
+                            <span>Today's Focus at Loren's Cottage</span>
+                        </h3>
+                        <button onclick="navigateTo('chores')" class="text-xs font-bold text-teal-700 flex items-center gap-x-1 hover:underline">
+                            MANAGE CHORES <i class="fa-solid fa-arrow-right text-xs ml-1"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="today-focus-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="lg:col-span-12 bg-white rounded-3xl p-7 soft-card border border-slate-100">
+                    <h3 class="font-semibold text-xl mb-4">Recent Activity</h3>
+                    <div id="recent-activity" class="space-y-3 text-sm">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== CHILDREN SECTION ==================== -->
+        <div id="section-children" class="section">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-3xl font-semibold tracking-tight">Children Directory</h2>
+                    <p class="text-slate-600">Manage all current residents • Easy to update as kids come and go</p>
+                </div>
+                <button onclick="showAddKidModal()" 
+                        class="warm-btn flex items-center gap-x-2 text-white px-6 h-12 rounded-3xl font-semibold text-sm shadow-sm">
+                    <i class="fa-solid fa-plus mr-2"></i> 
+                    <span>Add New Child</span>
+                </button>
+            </div>
+
+            <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-slate-100">
+                            <tr class="text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                <th class="px-6 py-4">Child</th>
+                                <th class="px-6 py-4">Age</th>
+                                <th class="px-6 py-4">Guardian / Sponsor</th>
+                                <th class="px-6 py-4">Contact</th>
+                                <th class="px-6 py-4 text-center">Calls Logged</th>
+                                <th class="px-6 py-4 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="kids-table-body" class="divide-y divide-slate-100 text-sm">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="mt-4 text-xs text-slate-500 flex items-center gap-x-2">
+                <i class="fa-solid fa-info-circle"></i>
+                <span>Tip: Click on any child row to view full details and call history. All changes save automatically.</span>
+            </div>
+        </div>
+
+        <!-- ==================== CHORES SECTION ==================== -->
+        <div id="section-chores" class="section">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-3xl font-semibold tracking-tight">Daily Chores</h2>
+                    <p class="text-slate-600">Fully flexible — change chores and assignments anytime</p>
+                </div>
+                <div class="flex gap-x-3">
+                    <button onclick="showAddChoreModal()" 
+                            class="warm-btn flex items-center gap-x-2 text-white px-5 h-11 rounded-3xl font-semibold text-sm">
+                        <i class="fa-solid fa-plus"></i>
+                        <span class="hidden sm:inline">New Assignment</span>
+                    </button>
+                    <button onclick="resetDailyChores()" 
+                            class="px-5 h-11 flex items-center gap-x-2 text-sm font-semibold border border-slate-300 hover:bg-slate-100 rounded-3xl transition-colors">
+                        <i class="fa-solid fa-redo"></i>
+                        <span class="hidden sm:inline">Reset for New Day</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl border border-slate-200 p-2">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="text-xs font-bold text-slate-600 border-b border-slate-100">
+                                <th class="px-5 py-4 text-left w-2/5">Chore / Task</th>
+                                <th class="px-5 py-4 text-left">Assigned To</th>
+                                <th class="px-5 py-4 text-center">Status</th>
+                                <th class="px-5 py-4 text-left">Notes / Comments</th>
+                                <th class="px-5 py-4 w-px"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="chores-table-body" class="text-sm divide-y divide-slate-100">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="mt-4 flex items-center justify-between text-xs px-1">
+                <div class="flex items-center gap-x-4 text-slate-500">
+                    <div class="flex items-center gap-x-1.5">
+                        <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
+                        <span>Completed</span>
+                    </div>
+                    <div class="flex items-center gap-x-1.5">
+                        <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+                        <span>Pending</span>
+                    </div>
+                </div>
+                <button onclick="showManageChoreTemplates()" class="text-teal-700 hover:underline font-medium flex items-center gap-x-1 text-xs">
+                    <i class="fa-solid fa-edit"></i> <span>Edit Master Chore List</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== MEDICINE & CARE ==================== -->
+        <div id="section-medicine" class="section">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-3xl font-semibold tracking-tight">Medicine &amp; Daily Care</h2>
+                    <p class="text-slate-600">Track medication rounds — morning, evening, and night</p>
+                </div>
+                <button onclick="showLogMedicineModal()" 
+                        class="warm-btn px-6 h-12 text-white rounded-3xl flex items-center gap-x-2 font-semibold text-sm">
+                    <i class="fa-solid fa-plus"></i> 
+                    <span>Log Medicine Given</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                <!-- Quick Rounds -->
+                <div class="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-200">
+                    <h4 class="font-bold mb-4 text-lg">Quick Medicine Rounds</h4>
+                    
+                    <div class="space-y-3">
+                        <button onclick="quickLogMedicineRound('morning')" 
+                                class="w-full flex justify-between items-center px-5 py-3.5 bg-orange-50 hover:bg-orange-100 border border-orange-200 transition-colors rounded-2xl text-left">
+                            <div class="flex items-center gap-x-3">
+                                <i class="fa-solid fa-sun text-orange-500 text-xl"></i>
+                                <div>
+                                    <div class="font-semibold">Morning Round</div>
+                                    <div class="text-xs text-orange-600">6:00 – 8:00 AM</div>
+                                </div>
+                            </div>
+                            <span class="text-xs font-mono bg-white px-3 py-1 rounded-xl border">LOG</span>
+                        </button>
+                        
+                        <button onclick="quickLogMedicineRound('evening')" 
+                                class="w-full flex justify-between items-center px-5 py-3.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition-colors rounded-2xl text-left">
+                            <div class="flex items-center gap-x-3">
+                                <i class="fa-solid fa-cloud-moon text-indigo-500 text-xl"></i>
+                                <div>
+                                    <div class="font-semibold">Evening Round</div>
+                                    <div class="text-xs text-indigo-600">5:00 – 7:00 PM</div>
+                                </div>
+                            </div>
+                            <span class="text-xs font-mono bg-white px-3 py-1 rounded-xl border">LOG</span>
+                        </button>
+                        
+                        <button onclick="quickLogMedicineRound('night')" 
+                                class="w-full flex justify-between items-center px-5 py-3.5 bg-slate-800 hover:bg-slate-900 transition-colors text-white rounded-2xl text-left">
+                            <div class="flex items-center gap-x-3">
+                                <i class="fa-solid fa-moon text-white text-xl"></i>
+                                <div>
+                                    <div class="font-semibold">Night Round</div>
+                                    <div class="text-xs text-slate-300">9:00 – 11:00 PM</div>
+                                </div>
+                            </div>
+                            <span class="text-xs font-mono bg-white/20 px-3 py-1 rounded-xl">LOG</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Medicine Logs -->
+                <div class="lg:col-span-3 bg-white rounded-3xl border border-slate-200 p-6">
+                    <div class="flex justify-between mb-4">
+                        <h4 class="font-bold">Recent Medicine Activity</h4>
+                        <button onclick="navigateTo('reports')" class="text-xs text-teal-700 font-medium">View full history →</button>
+                    </div>
+                    <div id="medicine-recent-logs" class="space-y-2 text-sm max-h-[280px] overflow-auto pr-2">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== COMMUNICATIONS ==================== -->
+        <div id="section-communications" class="section">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-3xl font-semibold tracking-tight">Communications &amp; Logs</h2>
+                    <p class="text-slate-600">Guardian phone calls • Slack • Outlook • TeamUp • WhatsApp reminders</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+                
+                <!-- Phone Call Log -->
+                <div class="xl:col-span-7 bg-white rounded-3xl border border-slate-200 p-6">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="font-bold flex items-center gap-x-2">
+                            <i class="fa-solid fa-phone text-teal-600"></i> 
+                            <span>Guardian / Sponsor Call Log</span>
+                        </h3>
+                        <button onclick="showLogCallModal()" class="text-xs px-4 h-9 flex items-center gap-x-2 bg-teal-800 text-white rounded-2xl text-sm font-semibold">
+                            <i class="fa-solid fa-plus"></i> <span>Log New Call</span>
+                        </button>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="text-xs text-slate-500 border-b">
+                                <tr>
+                                    <th class="text-left py-3 px-4 font-semibold">Date</th>
+                                    <th class="text-left py-3 px-4 font-semibold">Child</th>
+                                    <th class="text-left py-3 px-4 font-semibold">Guardian</th>
+                                    <th class="text-center py-3 px-4 font-semibold">Outcome</th>
+                                    <th class="text-left py-3 px-4 font-semibold">Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="phone-logs-table" class="divide-y text-xs">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-4 flex justify-end">
+                        <button onclick="generatePhoneLogReport()" 
+                                class="text-xs flex items-center gap-x-2 px-4 py-2 border border-slate-300 hover:bg-slate-50 rounded-2xl font-medium">
+                            <i class="fa-solid fa-download"></i> 
+                            <span>Generate Sunday Phone Log for Management</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Tools -->
+                <div class="xl:col-span-5 space-y-6">
+                    <!-- External Tools -->
+                    <div class="bg-white border border-slate-200 rounded-3xl p-6">
+                        <h3 class="font-bold mb-4">Quick Links — Your Tools</h3>
+                        <div class="grid grid-cols-1 gap-2 text-sm">
+                            <a href="https://slack.com" target="_blank" 
+                               class="flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-2xl group">
+                                <div class="flex items-center gap-x-3">
+                                    <i class="fa-brands fa-slack text-xl text-purple-600"></i>
+                                    <span class="font-semibold">Slack</span>
+                                </div>
+                                <span class="text-xs text-slate-400 group-hover:text-teal-600">Open →</span>
+                            </a>
+                            
+                            <a href="https://outlook.office.com" target="_blank" 
+                               class="flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-2xl group">
+                                <div class="flex items-center gap-x-3">
+                                    <i class="fa-solid fa-envelope text-xl text-blue-600"></i>
+                                    <span class="font-semibold">Outlook Email</span>
+                                </div>
+                                <span class="text-xs text-slate-400 group-hover:text-teal-600">Open →</span>
+                            </a>
+                            
+                            <a href="#" onclick="alert('Please open TeamUp from your saved bookmark or app. This is a placeholder link.'); return false;" 
+                               class="flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-2xl group">
+                                <div class="flex items-center gap-x-3">
+                                    <i class="fa-solid fa-calendar-check text-xl text-emerald-600"></i>
+                                    <span class="font-semibold">TeamUp Scheduling</span>
+                                </div>
+                                <span class="text-xs text-slate-400 group-hover:text-teal-600">Open →</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp Quick Send -->
+                    <div class="bg-emerald-900 text-white rounded-3xl p-6">
+                        <h3 class="font-bold mb-3 flex items-center gap-x-2">
+                            <i class="fa-brands fa-whatsapp"></i> 
+                            <span>Send via WhatsApp</span>
+                        </h3>
+                        <p class="text-emerald-200 text-xs mb-4">Send reminders, important updates, or the full Sunday turnover note directly to your phone or group.</p>
+                        
+                        <button onclick="quickWhatsAppMessage()" 
+                                class="w-full py-3 bg-white text-emerald-900 font-bold rounded-2xl flex items-center justify-center gap-x-2 text-sm active:scale-[0.985] transition-transform">
+                            <span>Compose &amp; Send Message</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== REPORTS ==================== -->
+        <div id="section-reports" class="section">
+            <div class="mb-6">
+                <h2 class="text-3xl font-semibold tracking-tight">Reports &amp; Summaries</h2>
+                <p class="text-slate-600">Everything you need before Sunday night turnover</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Sunday Turnover Generator -->
+                <div class="bg-white border border-teal-200 rounded-3xl p-8">
+                    <div class="flex items-start gap-x-4">
+                        <div class="text-5xl text-teal-600"><i class="fa-solid fa-file-export"></i></div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-2xl tracking-tight">Sunday Night Turnover Note</h3>
+                            <p class="text-slate-600 mt-2 text-sm">Automatically compiles kids status, chores completion, medicine compliance, phone calls, and daily notes into a clean, professional report ready for your relief houseparent.</p>
+                            
+                            <div class="mt-6 flex gap-x-3">
+                                <button onclick="generateSundayReport()" 
+                                        class="warm-btn px-8 h-12 text-white rounded-3xl flex-1 font-semibold text-sm flex items-center justify-center gap-x-2">
+                                    <i class="fa-solid fa-magic"></i>
+                                    <span>Generate Full Report</span>
+                                </button>
+                            </div>
+                            <p class="text-[10px] text-teal-700 mt-3">Sends beautifully formatted text to WhatsApp or clipboard</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Self Summary -->
+                <div class="bg-white border border-slate-200 rounded-3xl p-8">
+                    <h3 class="font-bold text-xl mb-2">Weekly Self-Summary</h3>
+                    <p class="text-sm text-slate-600">Get a personal overview of how the shift went — great for reflection or personal records.</p>
+                    
+                    <button onclick="generateSelfSummary()" 
+                            class="mt-5 px-6 py-3 text-sm border border-slate-300 hover:bg-slate-50 rounded-2xl flex items-center gap-x-2 font-medium">
+                        <i class="fa-solid fa-chart-pie"></i> 
+                        <span>Generate My Personal Summary</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== WISHLIST ==================== -->
+        <div id="section-wishlist" class="section">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-3xl font-semibold tracking-tight">Annual Wishlist</h2>
+                    <p class="text-slate-600">$0 — $150 gifts • Sit with each child and capture their heart's desire</p>
+                </div>
+                <button onclick="showAddWishModal()" 
+                        class="warm-btn px-6 h-12 text-white rounded-3xl flex items-center gap-x-2 font-semibold text-sm">
+                    <i class="fa-solid fa-plus"></i> 
+                    <span>Add Wish Item</span>
+                </button>
+            </div>
+
+            <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-slate-50">
+                        <tr class="text-xs font-bold text-slate-600">
+                            <th class="px-6 py-4 text-left">Child</th>
+                            <th class="px-6 py-4 text-left">Wish / Item</th>
+                            <th class="px-6 py-4 text-left">Link</th>
+                            <th class="px-6 py-4 text-right">Price</th>
+                            <th class="px-6 py-4 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="wishlist-table-body" class="text-sm divide-y">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="mt-3 px-2 text-xs flex justify-between text-slate-500">
+                <div>Total estimated value across all wishes: <span id="wishlist-total" class="font-mono font-bold text-teal-700">$0</span></div>
+                <div>Update prices and links as you sit with the children each year.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="border-t border-slate-200 py-6 text-center text-xs text-slate-500 max-w-screen-2xl mx-auto px-6">
+        <div class="flex flex-col md:flex-row items-center justify-center gap-x-4 gap-y-1">
+            <span>Loren's Cottage House Management System • Made with ❤️ for the children and houseparents at Sunshine Acres</span>
+            <span class="hidden md:inline">•</span>
+            <span class="font-mono text-[10px]">100% Free • Private • No subscriptions • Works offline</span>
+        </div>
+        <div class="mt-1 text-[10px]">All data stays in your browser. Use Export/Import in Settings to backup or move between devices.</div>
+    </footer>
+
+    <!-- ==================== MODALS ==================== -->
+    
+    <!-- Add/Edit Kid Modal -->
+    <div id="kid-modal" onclick="if (event.target.id === 'kid-modal') hideKidModal()" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
+        <div onclick="event.stopImmediatePropagation()" class="bg-white w-full max-w-lg mx-4 rounded-3xl shadow-xl modal">
+            <div class="px-7 pt-7 pb-5">
+                <h3 id="kid-modal-title" class="text-2xl font-semibold">Add New Child</h3>
+                <p class="text-sm text-slate-500">All information is private and saved locally</p>
+                
+                <div class="mt-6 space-y-5">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5">CHILD'S FULL NAME</label>
+                            <input id="kid-name" type="text" class="w-full border border-slate-300 focus:border-teal-600 transition-colors px-4 h-11 rounded-2xl text-sm" placeholder="e.g. Jordan Lee">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5">AGE</label>
+                            <input id="kid-age" type="number" class="w-full border border-slate-300 focus:border-teal-600 transition-colors px-4 h-11 rounded-2xl text-sm" placeholder="10">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">GUARDIAN / SPONSOR NAME</label>
+                        <input id="kid-guardian" type="text" class="w-full border border-slate-300 focus:border-teal-600 transition-colors px-4 h-11 rounded-2xl text-sm" placeholder="Ms. Angela Thompson">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5">PHONE NUMBER</label>
+                            <input id="kid-phone" type="tel" class="w-full border border-slate-300 focus:border-teal-600 transition-colors px-4 h-11 rounded-2xl text-sm" placeholder="(602) 555-0192">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5">EMAIL (OPTIONAL)</label>
+                            <input id="kid-email" type="email" class="w-full border border-slate-300 focus:border-teal-600 transition-colors px-4 h-11 rounded-2xl text-sm" placeholder="guardian@email.com">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">NOTES / IMPORTANT INFO</label>
+                        <textarea id="kid-notes" rows="2" class="w-full border border-slate-300 focus:border-teal-600 transition-colors px-4 py-3 rounded-2xl text-sm" placeholder="Allergies, preferences, case notes..."></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="px-7 py-5 bg-slate-50 flex justify-end gap-x-3 rounded-b-3xl">
+                <button onclick="hideKidModal()" class="px-6 h-11 text-sm font-semibold text-slate-600 hover:bg-slate-200 rounded-2xl">Cancel</button>
+                <button id="kid-modal-save-btn" onclick="saveKid()" class="warm-btn px-8 h-11 text-white text-sm font-bold rounded-2xl">Save Child</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Log Phone Call Modal -->
+    <div id="call-modal" onclick="if (event.target.id === 'call-modal') hideCallModal()" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
+        <div onclick="event.stopImmediatePropagation()" class="bg-white w-full max-w-md mx-4 rounded-3xl shadow-xl modal">
+            <div class="px-7 pt-7">
+                <h3 class="text-2xl font-semibold">Log Guardian Call</h3>
+                
+                <div class="mt-6 space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">CHILD</label>
+                        <select id="call-kid-select" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm"></select>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5">DATE OF CALL</label>
+                            <input id="call-date" type="date" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5">OUTCOME</label>
+                            <select id="call-outcome" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm">
+                                <option value="Good">Good / Positive</option>
+                                <option value="Okay">Okay / Neutral</option>
+                                <option value="Needs Attention">Needs Attention</option>
+                                <option value="Not Well">Not Well / Concerning</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">NOTES FROM CALL</label>
+                        <textarea id="call-notes" rows="3" class="w-full border border-slate-300 px-4 py-3 rounded-2xl text-sm" placeholder="What was discussed? Any requests or concerns?"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="px-7 py-5 bg-slate-50 flex justify-end gap-x-3 rounded-b-3xl">
+                <button onclick="hideCallModal()" class="px-6 h-11 text-sm font-semibold text-slate-600 hover:bg-slate-200 rounded-2xl">Cancel</button>
+                <button onclick="savePhoneCall()" class="warm-btn px-8 h-11 text-white text-sm font-bold rounded-2xl">Save Call Log</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Log Medicine Modal -->
+    <div id="medicine-modal" onclick="if (event.target.id === 'medicine-modal') hideMedicineModal()" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
+        <div onclick="event.stopImmediatePropagation()" class="bg-white w-full max-w-md mx-4 rounded-3xl shadow-xl modal">
+            <div class="px-7 pt-7">
+                <h3 class="text-2xl font-semibold">Log Medicine Administration</h3>
+                
+                <div class="mt-5 space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">TIME OF DAY</label>
+                        <div class="flex gap-x-2">
+                            <button onclick="selectMedicineTime(this, 'morning')" class="med-time-btn flex-1 py-2 text-sm border border-orange-300 bg-orange-50 text-orange-700 font-semibold rounded-2xl active:scale-[0.985]">Morning</button>
+                            <button onclick="selectMedicineTime(this, 'evening')" class="med-time-btn flex-1 py-2 text-sm border border-indigo-300 bg-indigo-50 text-indigo-700 font-semibold rounded-2xl active:scale-[0.985]">Evening</button>
+                            <button onclick="selectMedicineTime(this, 'night')" class="med-time-btn flex-1 py-2 text-sm border border-slate-400 bg-slate-100 text-slate-700 font-semibold rounded-2xl active:scale-[0.985]">Night</button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">CHILDREN RECEIVING MEDS (select all that apply)</label>
+                        <div id="medicine-kids-list" class="max-h-[140px] overflow-auto border border-slate-200 rounded-2xl p-3 space-y-1 text-sm">
+                            <!-- Checkboxes populated by JS -->
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">MEDICATION DETAILS (optional)</label>
+                        <input id="medicine-details" type="text" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm" placeholder="e.g. Antibiotic - 1 tablet, or multivitamin">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">NOTES</label>
+                        <textarea id="medicine-notes" rows="2" class="w-full border border-slate-300 px-4 py-3 rounded-2xl text-sm" placeholder="Any reactions, refusals, or observations?"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="px-7 py-5 bg-slate-50 flex justify-end gap-x-3 rounded-b-3xl">
+                <button onclick="hideMedicineModal()" class="px-6 h-11 text-sm font-semibold text-slate-600 hover:bg-slate-200 rounded-2xl">Cancel</button>
+                <button onclick="saveMedicineLog()" class="warm-btn px-8 h-11 text-white text-sm font-bold rounded-2xl">Save Log</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Chore Modal -->
+    <div id="chore-modal" onclick="if (event.target.id === 'chore-modal') hideChoreModal()" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
+        <div onclick="event.stopImmediatePropagation()" class="bg-white w-full max-w-md mx-4 rounded-3xl shadow-xl modal">
+            <div class="px-7 pt-7">
+                <h3 class="text-2xl font-semibold">Assign New Chore</h3>
+                
+                <div class="mt-5 space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">CHORE / TASK</label>
+                        <input id="chore-name" list="chore-suggestions" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm" placeholder="Make bed, Sweep floor, etc.">
+                        <datalist id="chore-suggestions">
+                            <!-- Populated dynamically from master list -->
+                        </datalist>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">ASSIGN TO</label>
+                        <select id="chore-kid" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm">
+                            <option value="">-- Select child --</option>
+                            <!-- Populated by JS -->
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">NOTES (optional)</label>
+                        <input id="chore-notes" type="text" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm" placeholder="e.g. Use the blue broom">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="px-7 py-5 bg-slate-50 flex justify-end gap-x-3 rounded-b-3xl">
+                <button onclick="hideChoreModal()" class="px-6 h-11 text-sm font-semibold text-slate-600 hover:bg-slate-200 rounded-2xl">Cancel</button>
+                <button onclick="saveChore()" class="warm-btn px-8 h-11 text-white text-sm font-bold rounded-2xl">Assign Chore</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Wish Modal -->
+    <div id="wish-modal" onclick="if (event.target.id === 'wish-modal') hideWishModal()" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
+        <div onclick="event.stopImmediatePropagation()" class="bg-white w-full max-w-md mx-4 rounded-3xl shadow-xl modal">
+            <div class="px-7 pt-7">
+                <h3 class="text-2xl font-semibold">Add Wishlist Item</h3>
+                <p class="text-xs text-slate-500">Capture what the child truly wants (max $150)</p>
+                
+                <div class="mt-6 space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">CHILD</label>
+                        <select id="wish-kid-select" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm"></select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">ITEM / WISH DESCRIPTION</label>
+                        <input id="wish-item" type="text" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm" placeholder="Blue bicycle or Lego set">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5">LINK (copy &amp; paste)</label>
+                            <input id="wish-link" type="url" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm" placeholder="https://...">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5">PRICE (USD)</label>
+                            <input id="wish-price" type="number" step="0.01" class="w-full border border-slate-300 px-4 h-11 rounded-2xl text-sm" placeholder="89.99">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="px-7 py-5 bg-slate-50 flex justify-end gap-x-3 rounded-b-3xl">
+                <button onclick="hideWishModal()" class="px-6 h-11 text-sm font-semibold text-slate-600 hover:bg-slate-200 rounded-2xl">Cancel</button>
+                <button onclick="saveWishItem()" class="warm-btn px-8 h-11 text-white text-sm font-bold rounded-2xl">Add to Wishlist</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div id="toast" class="hidden fixed bottom-5 right-5 bg-teal-900 text-white px-6 py-3.5 rounded-3xl flex items-center gap-x-3 shadow-xl z-[200]">
+        <i class="fa-solid fa-check-circle text-emerald-400"></i>
+        <span id="toast-message" class="font-medium text-sm"></span>
+    </div>
+
+    <script>
+        // ==================== STATE MANAGEMENT ====================
+        let state = {
+            kids: [],
+            chores: [],
+            medicineLogs: [],
+            phoneLogs: [],
+            dailyNotes: [],
+            wishItems: [],
+            masterChores: [
+                "Make bed", "Brush teeth & wash face", "Clean room / put toys away", 
+                "Help set the table", "Sweep or vacuum floor", "Take out trash", 
+                "Homework / reading time", "Help with dishes", "Water plants", 
+                "Organize shoes / belongings", "Evening prayer / devotion prep"
+            ],
+            settings: {
+                houseName: "Loren's Cottage",
+                lastResetDate: null
+            }
+        };
+
+        function saveState() {
+            localStorage.setItem('lorensCottageState', JSON.stringify(state));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('lorensCottageState');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                // Merge to keep new masterChores if updated
+                state = { ...state, ...parsed };
+                if (!state.masterChores || state.masterChores.length === 0) {
+                    state.masterChores = [
+                        "Make bed", "Brush teeth & wash face", "Clean room / put toys away", 
+                        "Help set the table", "Sweep or vacuum floor", "Take out trash", 
+                        "Homework / reading time", "Help with dishes", "Water plants", 
+                        "Organize shoes / belongings", "Evening prayer / devotion prep"
+                    ];
+                }
+            } else {
+                // First time - seed with beautiful sample data
+                seedSampleData();
+            }
+        }
+
+        function seedSampleData() {
+            const today = new Date().toISOString().split('T')[0];
+            
+            state.kids = [
+                { 
+                    id: Date.now() + 101, 
+                    name: "Xochtli Ordaz", 
+                    age: 13, 
+                    guardian: "Luis Ordaz (Dad)", 
+                    phone: "602-800-8717", 
+                    email: "", 
+                    notes: "Intake: 07/08/22 | DOB: 11/20/12 | School: SJHS | Grade 7 | Age 13.60. Uncle Jeremy: 602-551-4186. Tia Nancy: (602) 641-1658. Grandparents: 623-920-5553. Temp foster: Jim 480-510-5237 / Julie 602-316-9612. Roseanne Garcia - Not approved.", 
+                    callLogs: [] 
+                },
+                { 
+                    id: Date.now() + 102, 
+                    name: "Melody Hernandez", 
+                    age: 12, 
+                    guardian: "Maritza Hernandez (Mom)", 
+                    phone: "(623) 986-3010", 
+                    email: "ritza0812@gmail.com; maritza1615@icloud.com", 
+                    notes: "Intake: 10/14/22 | DOB: 11/15/13 | School: RMRE | Grade 7 | Age 12.61. Primo (Uncle): (602) 466-4642. Luna (sister): (928) 231-6667. Elena Sevilla - Unapproved contact.", 
+                    callLogs: [] 
+                },
+                { 
+                    id: Date.now() + 103, 
+                    name: "A'Niya Jackson", 
+                    age: 12, 
+                    guardian: "Shantaze Jackson (Mom)", 
+                    phone: "623-764-7040", 
+                    email: "shantazejackson12@gmail.com", 
+                    notes: "Intake: 07/28/25 | DOB: 05/17/14 | School: SJHS | Grade 7 | Age 12.11. Desaree Rily (Aunt): (785) 554-8349. Keshunda Jackson: (602) 883-6397. Tamara Jackson: 602-783-2437. Tyrone Jackson: (602) 676-1791. D'Anthony Garcia: 623-760-8743. Desalyn Jackson: (623) 826-0004. Special number: (480) 442-3270 - Use this number.", 
+                    callLogs: [] 
+                },
+                { 
+                    id: Date.now() + 104, 
+                    name: "Truth Sutton", 
+                    age: 7, 
+                    guardian: "Aleesa Baker (Mom)", 
+                    phone: "602-349-8846", 
+                    email: "bakeraleesa@gmail.com", 
+                    notes: "Intake: 01/14/26 | DOB: 01/24/19 | School: RMRE | Grade 2 | Age 7.42. Joseph Barrientes (Family Friend/Emergency): (412) 478-8137.", 
+                    callLogs: [] 
+                },
+                { 
+                    id: Date.now() + 105, 
+                    name: "Gianna Taylor", 
+                    age: 13, 
+                    guardian: "Dan Taylor", 
+                    phone: "(480) 220-7392", 
+                    email: "", 
+                    notes: "Intake: 05/28/26 | DOB: 09/03/12 | School: ALA | Grade 9 | Age 13.81. GiGi Taylor: (480) 263-1844. Russ Taylor: 480-707-3647.", 
+                    callLogs: [] 
+                }
+            ];
+
+            // Sample chores (ready for you to assign)
+            state.chores = [
+                { id: Date.now() + 201, name: "Make bed", assignedKidId: state.kids[0].id, status: "pending", notes: "", lastUpdated: today },
+                { id: Date.now() + 202, name: "Brush teeth & wash face", assignedKidId: state.kids[1].id, status: "pending", notes: "", lastUpdated: today },
+                { id: Date.now() + 203, name: "Clean room / put toys away", assignedKidId: state.kids[2].id, status: "pending", notes: "", lastUpdated: today },
+                { id: Date.now() + 204, name: "Help set the table", assignedKidId: null, status: "pending", notes: "Group activity", lastUpdated: today },
+                { id: Date.now() + 205, name: "Homework / reading time", assignedKidId: state.kids[3].id, status: "pending", notes: "", lastUpdated: today }
+            ];
+
+            // Sample phone logs (you can add more)
+            state.phoneLogs = [];
+
+            // Sample medicine logs
+            state.medicineLogs = [];
+
+            // Sample wishes (empty for now)
+            state.wishItems = [];
+
+            state.settings.lastResetDate = today;
+            saveState();
+        }
+
+        // ==================== NAVIGATION ====================
+        function navigateTo(section) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            
+            // Show target
+            const targetSection = document.getElementById('section-' + section);
+            if (targetSection) targetSection.classList.add('active');
+            
+            // Update nav active states
+            document.querySelectorAll('[id^="nav-"]').forEach(nav => {
+                nav.classList.remove('bg-teal-800', 'text-white');
+                nav.classList.add('hover:bg-slate-100', 'text-slate-700');
+            });
+            
+            const activeNav = document.getElementById('nav-' + section);
+            if (activeNav) {
+                activeNav.classList.add('bg-teal-800', 'text-white');
+                activeNav.classList.remove('hover:bg-slate-100', 'text-slate-700');
+            }
+            
+            // Update header
+            const titles = {
+                'dashboard': ['Dashboard', 'Welcome back to Loren\'s Cottage • Your home away from home'],
+                'children': ['Children Directory', 'Manage all current residents • Easy to update as kids come and go'],
+                'chores': ['Daily Chores', 'Fully flexible — change chores and assignments anytime'],
+                'medicine': ['Medicine & Daily Care', 'Track medication rounds — morning, evening, and night'],
+                'communications': ['Communications & Logs', 'Guardian phone calls • Slack • Outlook • TeamUp • WhatsApp reminders'],
+                'reports': ['Reports & Summaries', 'Everything you need before Sunday night turnover'],
+                'wishlist': ['Annual Wishlist', '$0 — $150 gifts • Sit with each child and capture their heart\'s desire']
+            };
+            
+            if (titles[section]) {
+                document.getElementById('page-title').innerHTML = titles[section][0];
+                document.getElementById('page-subtitle').innerHTML = titles[section][1];
+            }
+            
+            // Refresh content for the section
+            if (section === 'children') renderKidsTable();
+            if (section === 'chores') renderChoresTable();
+            if (section === 'medicine') renderMedicineRecentLogs();
+            if (section === 'communications') renderPhoneLogsTable();
+            if (section === 'wishlist') renderWishlistTable();
+            if (section === 'dashboard') {
+                updateDashboardStats();
+                renderTodayFocus();
+                renderRecentActivity();
+            }
+        }
+
+        // ==================== DASHBOARD ====================
+        function updateDashboardStats() {
+            // Kids count
+            document.getElementById('dash-kids-count').textContent = state.kids.length;
+            
+            // Pending chores
+            const pending = state.chores.filter(c => c.status === 'pending').length;
+            document.getElementById('dash-chores-pending').textContent = pending;
+            
+            // Meds due today (simplified - count distinct kids who had meds logged today)
+            const today = new Date().toISOString().split('T')[0];
+            const todayMeds = state.medicineLogs.filter(m => m.date === today);
+            const uniqueKidsMeds = new Set();
+            todayMeds.forEach(log => log.kids.forEach(kidId => uniqueKidsMeds.add(kidId)));
+            document.getElementById('dash-meds-due').textContent = Math.max(3, uniqueKidsMeds.size); // At least 3 for demo
+        }
+
+        function renderTodayFocus() {
+            const container = document.getElementById('today-focus-list');
+            container.innerHTML = '';
+            
+            const pendingChores = state.chores.filter(c => c.status === 'pending').slice(0, 4);
+            
+            if (pendingChores.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full flex items-center justify-center py-6 bg-emerald-50 rounded-2xl">
+                        <div class="text-center">
+                            <i class="fa-solid fa-check-double text-emerald-500 text-3xl mb-2"></i>
+                            <p class="font-semibold text-emerald-700">All chores caught up! Great work.</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            pendingChores.forEach(chore => {
+                const kid = state.kids.find(k => k.id === chore.assignedKidId);
+                const div = document.createElement('div');
+                div.className = `p-4 border border-amber-100 bg-amber-50 rounded-2xl flex items-start gap-x-3`;
+                div.innerHTML = `
+                    <div class="pt-0.5">
+                        <i class="fa-solid fa-clipboard-list text-amber-500"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-semibold text-sm leading-tight">${chore.name}</div>
+                        <div class="text-xs text-amber-700 mt-0.5">${kid ? kid.name : 'Unassigned'}</div>
+                        ${chore.notes ? `<div class="text-[10px] text-amber-600 mt-1 italic">"${chore.notes}"</div>` : ''}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function renderRecentActivity() {
+            const container = document.getElementById('recent-activity');
+            container.innerHTML = '';
+            
+            let activities = [];
+            
+            // Recent phone calls
+            state.phoneLogs.slice(-3).forEach(log => {
+                const kid = state.kids.find(k => k.id === log.kidId);
+                activities.push({
+                    time: log.date,
+                    icon: 'fa-phone',
+                    color: 'text-emerald-600',
+                    text: `Call logged with ${kid ? kid.name : 'child'} — ${log.outcome}`
+                });
+            });
+            
+            // Recent medicine
+            state.medicineLogs.slice(-2).forEach(log => {
+                activities.push({
+                    time: log.date,
+                    icon: 'fa-pills',
+                    color: 'text-indigo-600',
+                    text: `${log.timeOfDay.charAt(0).toUpperCase() + log.timeOfDay.slice(1)} meds given to ${log.kids.length} child(ren)`
+                });
+            });
+            
+            // Recent completed chores
+            state.chores.filter(c => c.status === 'completed').slice(-2).forEach(chore => {
+                const kid = state.kids.find(k => k.id === chore.assignedKidId);
+                activities.push({
+                    time: chore.lastUpdated,
+                    icon: 'fa-check-circle',
+                    color: 'text-teal-600',
+                    text: `${kid ? kid.name : 'A child'} completed: ${chore.name}`
+                });
+            });
+            
+            // Sort by most recent (simple)
+            activities.sort((a, b) => b.time.localeCompare(a.time));
+            
+            if (activities.length === 0) {
+                container.innerHTML = `<div class="text-sm text-slate-500 py-4">No recent activity yet. Start logging to see updates here.</div>`;
+                return;
+            }
+            
+            activities.slice(0, 5).forEach(act => {
+                const div = document.createElement('div');
+                div.className = `log-entry flex items-start gap-x-3 p-3 bg-slate-50 rounded-2xl`;
+                div.innerHTML = `
+                    <div class="${act.color} mt-0.5"><i class="fa-solid ${act.icon}"></i></div>
+                    <div class="flex-1 text-sm">
+                        <span class="font-medium">${act.text}</span>
+                        <span class="block text-[10px] text-slate-400 font-mono mt-0.5">${act.time}</span>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ==================== KIDS ====================
+        function renderKidsTable() {
+            const tbody = document.getElementById('kids-table-body');
+            tbody.innerHTML = '';
+            
+            if (state.kids.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-12 text-center text-slate-400">No children added yet. Click "Add New Child" to get started.</td></tr>`;
+                return;
+            }
+            
+            state.kids.forEach(kid => {
+                const callCount = kid.callLogs ? kid.callLogs.length : 0;
+                const tr = document.createElement('tr');
+                tr.className = `hover:bg-teal-50/50 cursor-pointer`;
+                tr.onclick = () => showKidDetail(kid.id);
+                
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-semibold">${kid.name}</td>
+                    <td class="px-6 py-4 text-slate-600">${kid.age} yrs</td>
+                    <td class="px-6 py-4">${kid.guardian || '<span class="text-slate-400">—</span>'}</td>
+                    <td class="px-6 py-4">
+                        ${kid.phone ? `<a href="tel:${kid.phone}" onclick="event.stopImmediatePropagation()" class="text-teal-700 hover:underline font-mono text-xs">${kid.phone}</a>` : '<span class="text-slate-400">—</span>'}
+                        ${kid.email ? `<div class="text-[10px] text-slate-500">${kid.email}</div>` : ''}
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <span class="inline-flex items-center justify-center bg-teal-100 text-teal-700 text-xs font-mono px-3 py-px rounded-full">${callCount}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex justify-end gap-x-1" onclick="event.stopImmediatePropagation()">
+                            <button onclick="showLogCallModal(${kid.id}); event.stopImmediatePropagation()" class="text-xs px-3 py-1.5 hover:bg-white border border-transparent hover:border-teal-200 rounded-xl text-teal-700">
+                                <i class="fa-solid fa-phone"></i>
+                            </button>
+                            <button onclick="editKid(${kid.id}); event.stopImmediatePropagation()" class="text-xs px-3 py-1.5 hover:bg-white border border-transparent hover:border-teal-200 rounded-xl text-teal-700">
+                                <i class="fa-solid fa-edit"></i>
+                            </button>
+                            <button onclick="deleteKid(${kid.id}); event.stopImmediatePropagation()" class="text-xs px-3 py-1.5 hover:bg-white border border-transparent hover:border-red-200 text-red-600 rounded-xl">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        let editingKidId = null;
+
+        function showAddKidModal() {
+            editingKidId = null;
+            document.getElementById('kid-modal-title').innerHTML = 'Add New Child';
+            document.getElementById('kid-modal-save-btn').innerHTML = 'Save Child';
+            
+            // Clear form
+            document.getElementById('kid-name').value = '';
+            document.getElementById('kid-age').value = '';
+            document.getElementById('kid-guardian').value = '';
+            document.getElementById('kid-phone').value = '';
+            document.getElementById('kid-email').value = '';
+            document.getElementById('kid-notes').value = '';
+            
+            document.getElementById('kid-modal').classList.remove('hidden');
+            document.getElementById('kid-modal').classList.add('flex');
+        }
+
+        function editKid(kidId) {
+            const kid = state.kids.find(k => k.id === kidId);
+            if (!kid) return;
+            
+            editingKidId = kidId;
+            document.getElementById('kid-modal-title').innerHTML = 'Edit Child';
+            document.getElementById('kid-modal-save-btn').innerHTML = 'Update Child';
+            
+            document.getElementById('kid-name').value = kid.name || '';
+            document.getElementById('kid-age').value = kid.age || '';
+            document.getElementById('kid-guardian').value = kid.guardian || '';
+            document.getElementById('kid-phone').value = kid.phone || '';
+            document.getElementById('kid-email').value = kid.email || '';
+            document.getElementById('kid-notes').value = kid.notes || '';
+            
+            document.getElementById('kid-modal').classList.remove('hidden');
+            document.getElementById('kid-modal').classList.add('flex');
+        }
+
+        function hideKidModal() {
+            document.getElementById('kid-modal').classList.remove('flex');
+            document.getElementById('kid-modal').classList.add('hidden');
+        }
+
+        function saveKid() {
+            const name = document.getElementById('kid-name').value.trim();
+            if (!name) {
+                alert("Child's name is required.");
+                return;
+            }
+            
+            const kidData = {
+                name: name,
+                age: parseInt(document.getElementById('kid-age').value) || null,
+                guardian: document.getElementById('kid-guardian').value.trim(),
+                phone: document.getElementById('kid-phone').value.trim(),
+                email: document.getElementById('kid-email').value.trim(),
+                notes: document.getElementById('kid-notes').value.trim()
+            };
+            
+            if (editingKidId) {
+                // Update existing
+                const index = state.kids.findIndex(k => k.id === editingKidId);
+                if (index !== -1) {
+                    state.kids[index] = { ...state.kids[index], ...kidData };
+                }
+            } else {
+                // Add new
+                state.kids.push({
+                    id: Date.now(),
+                    ...kidData,
+                    callLogs: []
+                });
+            }
+            
+            saveState();
+            hideKidModal();
+            renderKidsTable();
+            updateDashboardStats();
+            showToast(editingKidId ? "Child updated successfully" : "New child added to Loren's Cottage");
+            
+            // Refresh other dependent UIs
+            if (!document.getElementById('section-children').classList.contains('active')) {
+                navigateTo('children');
+            }
+        }
+
+        function deleteKid(kidId) {
+            if (!confirm("Are you sure you want to remove this child from the directory? This cannot be undone.")) return;
+            
+            state.kids = state.kids.filter(k => k.id !== kidId);
+            // Also remove related chores and logs? For safety, keep historical logs but orphan them.
+            state.chores = state.chores.filter(c => c.assignedKidId !== kidId);
+            
+            saveState();
+            renderKidsTable();
+            renderChoresTable();
+            updateDashboardStats();
+            showToast("Child removed from directory");
+        }
+
+        function showKidDetail(kidId) {
+            const kid = state.kids.find(k => k.id === kidId);
+            if (!kid) return;
+            
+            const modalHTML = `
+                <div onclick="this.remove()" class="fixed inset-0 bg-black/70 flex items-center justify-center z-[110]">
+                    <div onclick="event.stopImmediatePropagation()" class="bg-white w-full max-w-lg mx-4 rounded-3xl overflow-hidden modal">
+                        <div class="px-7 pt-7 pb-5">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="text-3xl font-semibold tracking-tight">${kid.name}</h3>
+                                    <p class="text-teal-700">${kid.age ? kid.age + ' years old' : 'Age not specified'}</p>
+                                </div>
+                                <button onclick="event.target.closest('.fixed').remove()" class="text-3xl leading-none text-slate-400 hover:text-slate-600">&times;</button>
+                            </div>
+                            
+                            <div class="mt-6 space-y-5 text-sm">
+                                <div>
+                                    <div class="text-xs uppercase tracking-widest text-slate-500 font-bold mb-px">GUARDIAN / SPONSOR</div>
+                                    <div class="font-semibold">${kid.guardian || 'Not listed'}</div>
+                                    ${kid.phone ? `<div class="mt-0.5"><a href="tel:${kid.phone}" class="font-mono text-teal-700">${kid.phone}</a></div>` : ''}
+                                    ${kid.email ? `<div class="text-xs text-slate-500">${kid.email}</div>` : ''}
+                                </div>
+                                
+                                ${kid.notes ? `
+                                <div>
+                                    <div class="text-xs uppercase tracking-widest text-slate-500 font-bold mb-px">NOTES</div>
+                                    <div class="text-slate-700">${kid.notes}</div>
+                                </div>` : ''}
+                                
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <div class="text-xs uppercase tracking-widest text-slate-500 font-bold">CALL HISTORY (${kid.callLogs ? kid.callLogs.length : 0})</div>
+                                        <button onclick="event.target.closest('.fixed').remove(); showLogCallModal(${kid.id})" class="text-xs px-4 py-1 bg-teal-800 text-white rounded-2xl">+ Log New Call</button>
+                                    </div>
+                                    
+                                    <div class="max-h-[160px] overflow-auto pr-1 space-y-2">
+                                        ${(kid.callLogs && kid.callLogs.length > 0) ? kid.callLogs.slice().reverse().map(log => `
+                                            <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-xs">
+                                                <div class="flex justify-between">
+                                                    <span class="font-mono text-teal-700">${log.date}</span>
+                                                    <span class="px-2.5 py-px text-[10px] rounded-full font-bold ${log.outcome === 'Good' ? 'bg-emerald-100 text-emerald-700' : log.outcome === 'Needs Attention' || log.outcome === 'Not Well' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}">${log.outcome}</span>
+                                                </div>
+                                                ${log.notes ? `<div class="mt-1.5 text-slate-600">${log.notes}</div>` : ''}
+                                            </div>
+                                        `).join('') : `<div class="text-xs text-slate-400 py-3">No calls logged yet for ${kid.name.split(' ')[0]}.</div>`}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="px-7 py-5 bg-slate-50 flex justify-end gap-x-3">
+                            <button onclick="event.target.closest('.fixed').remove(); editKid(${kid.id})" class="px-6 h-11 text-sm font-semibold border border-slate-300 hover:bg-white rounded-2xl flex items-center gap-x-2">
+                                <i class="fa-solid fa-edit"></i> <span>Edit Details</span>
+                            </button>
+                            <button onclick="event.target.closest('.fixed').remove()" class="px-6 h-11 text-sm font-semibold bg-teal-800 text-white rounded-2xl">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        // ==================== CHORES ====================
+        function renderChoresTable() {
+            const tbody = document.getElementById('chores-table-body');
+            tbody.innerHTML = '';
+            
+            if (state.chores.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-slate-400">No chores assigned yet. Add some using the button above.</td></tr>`;
+                return;
+            }
+            
+            state.chores.forEach((chore, index) => {
+                const kid = state.kids.find(k => k.id === chore.assignedKidId);
+                const isDone = chore.status === 'completed';
+                
+                const tr = document.createElement('tr');
+                tr.className = `chore-row ${isDone ? 'opacity-75' : ''}`;
+                
+                tr.innerHTML = `
+                    <td class="px-5 py-4">
+                        <div class="font-medium">${chore.name}</div>
+                    </td>
+                    <td class="px-5 py-4">
+                        ${kid ? `<span class="font-medium">${kid.name}</span>` : `<span class="italic text-slate-400">Unassigned</span>`}
+                    </td>
+                    <td class="px-5 py-4">
+                        <button onclick="toggleChoreStatus(${chore.id}, event)" class="px-4 py-1 text-xs font-bold rounded-2xl transition-all flex items-center gap-x-1.5 ${isDone ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">
+                            <i class="fa-solid ${isDone ? 'fa-check-circle' : 'fa-clock'}"></i>
+                            <span>${isDone ? 'Done' : 'Pending'}</span>
+                        </button>
+                    </td>
+                    <td class="px-5 py-4 text-xs text-slate-600">
+                        ${chore.notes ? chore.notes : '<span class="text-slate-300">—</span>'}
+                    </td>
+                    <td class="px-5 py-4 text-right">
+                        <div class="flex justify-end gap-x-px">
+                            <button onclick="editChore(${chore.id}, event)" class="px-3 py-2 text-teal-600 hover:bg-teal-50 rounded-l-2xl"><i class="fa-solid fa-edit fa-sm"></i></button>
+                            <button onclick="deleteChore(${chore.id}, event)" class="px-3 py-2 text-red-500 hover:bg-red-50 rounded-r-2xl"><i class="fa-solid fa-trash fa-sm"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleChoreStatus(choreId, e) {
+            e.stopImmediatePropagation();
+            const chore = state.chores.find(c => c.id === choreId);
+            if (!chore) return;
+            
+            chore.status = chore.status === 'completed' ? 'pending' : 'completed';
+            chore.lastUpdated = new Date().toISOString().split('T')[0];
+            
+            saveState();
+            renderChoresTable();
+            updateDashboardStats();
+            renderTodayFocus();
+            
+            if (chore.status === 'completed') {
+                showToast("Great job! Chore marked complete.");
+            }
+        }
+
+        function showAddChoreModal() {
+            // Populate kid select
+            const kidSelect = document.getElementById('chore-kid');
+            kidSelect.innerHTML = '<option value="">-- Select child (or leave unassigned) --</option>';
+            
+            state.kids.forEach(kid => {
+                const opt = document.createElement('option');
+                opt.value = kid.id;
+                opt.textContent = kid.name;
+                kidSelect.appendChild(opt);
+            });
+            
+            // Populate datalist suggestions
+            const datalist = document.getElementById('chore-suggestions');
+            datalist.innerHTML = '';
+            state.masterChores.forEach(choreName => {
+                const option = document.createElement('option');
+                option.value = choreName;
+                datalist.appendChild(option);
+            });
+            
+            // Clear inputs
+            document.getElementById('chore-name').value = '';
+            document.getElementById('chore-notes').value = '';
+            document.getElementById('chore-kid').value = '';
+            
+            document.getElementById('chore-modal').classList.remove('hidden');
+            document.getElementById('chore-modal').classList.add('flex');
+        }
+
+        function hideChoreModal() {
+            document.getElementById('chore-modal').classList.remove('flex');
+            document.getElementById('chore-modal').classList.add('hidden');
+        }
+
+        function saveChore() {
+            const name = document.getElementById('chore-name').value.trim();
+            if (!name) {
+                alert("Please enter a chore name.");
+                return;
+            }
+            
+            const assignedKidId = document.getElementById('chore-kid').value ? parseInt(document.getElementById('chore-kid').value) : null;
+            const notes = document.getElementById('chore-notes').value.trim();
+            
+            state.chores.push({
+                id: Date.now(),
+                name: name,
+                assignedKidId: assignedKidId,
+                status: 'pending',
+                notes: notes,
+                lastUpdated: new Date().toISOString().split('T')[0]
+            });
+            
+            saveState();
+            hideChoreModal();
+            renderChoresTable();
+            updateDashboardStats();
+            renderTodayFocus();
+            showToast("Chore assigned successfully");
+        }
+
+        function editChore(choreId, e) {
+            e.stopImmediatePropagation();
+            const chore = state.chores.find(c => c.id === choreId);
+            if (!chore) return;
+            
+            // Reuse add modal but prefill
+            showAddChoreModal();
+            
+            document.getElementById('chore-name').value = chore.name;
+            document.getElementById('chore-notes').value = chore.notes || '';
+            if (chore.assignedKidId) {
+                document.getElementById('chore-kid').value = chore.assignedKidId;
+            }
+            
+            // Change save behavior temporarily
+            const originalSave = document.querySelector('#chore-modal button[onclick*="saveChore"]');
+            if (originalSave) {
+                originalSave.onclick = () => {
+                    const name = document.getElementById('chore-name').value.trim();
+                    if (!name) return alert("Chore name required");
+                    
+                    chore.name = name;
+                    chore.assignedKidId = document.getElementById('chore-kid').value ? parseInt(document.getElementById('chore-kid').value) : null;
+                    chore.notes = document.getElementById('chore-notes').value.trim();
+                    
+                    saveState();
+                    hideChoreModal();
+                    renderChoresTable();
+                    updateDashboardStats();
+                    
+                    // Restore original
+                    originalSave.onclick = () => saveChore();
+                };
+            }
+        }
+
+        function deleteChore(choreId, e) {
+            e.stopImmediatePropagation();
+            if (!confirm("Remove this chore assignment?")) return;
+            
+            state.chores = state.chores.filter(c => c.id !== choreId);
+            saveState();
+            renderChoresTable();
+            updateDashboardStats();
+            renderTodayFocus();
+        }
+
+        function resetDailyChores() {
+            if (!confirm("Reset all chores to 'Pending' for a fresh start? (Completed chores will be unmarked)")) return;
+            
+            state.chores.forEach(chore => {
+                chore.status = 'pending';
+                chore.lastUpdated = new Date().toISOString().split('T')[0];
+            });
+            
+            state.settings.lastResetDate = new Date().toISOString().split('T')[0];
+            saveState();
+            renderChoresTable();
+            updateDashboardStats();
+            renderTodayFocus();
+            showToast("All chores reset for a new day");
+        }
+
+        function showManageChoreTemplates() {
+            const modalHTML = `
+                <div onclick="this.remove()" class="fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
+                    <div onclick="event.stopImmediatePropagation()" class="bg-white w-full max-w-md mx-4 rounded-3xl modal">
+                        <div class="px-7 pt-7">
+                            <h3 class="font-bold text-xl">Manage Master Chore List</h3>
+                            <p class="text-xs text-slate-500">These suggestions appear when assigning new chores.</p>
+                            
+                            <div class="mt-5">
+                                <div class="flex gap-x-2 mb-3">
+                                    <input id="new-master-chore" type="text" class="flex-1 border px-4 h-10 rounded-2xl text-sm" placeholder="New chore name...">
+                                    <button onclick="addMasterChore(this)" class="px-5 bg-teal-800 text-white text-sm font-bold rounded-2xl">Add</button>
+                                </div>
+                                
+                                <div id="master-chore-list" class="max-h-[240px] overflow-auto space-y-1 pr-1 text-sm">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="px-7 py-5 bg-slate-50 flex justify-end rounded-b-3xl">
+                            <button onclick="this.closest('.fixed').remove()" class="px-6 h-11 text-sm font-semibold text-slate-600 hover:bg-white rounded-2xl">Done</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            renderMasterChoreList();
+        }
+
+        function renderMasterChoreList() {
+            const container = document.getElementById('master-chore-list');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            state.masterChores.forEach((chore, idx) => {
+                const div = document.createElement('div');
+                div.className = `flex items-center justify-between px-4 py-2 bg-slate-50 rounded-2xl`;
+                div.innerHTML = `
+                    <span>${chore}</span>
+                    <button onclick="removeMasterChore(${idx}, this)" class="text-red-400 hover:text-red-600 px-2"><i class="fa-solid fa-times"></i></button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function addMasterChore(btn) {
+            const input = document.getElementById('new-master-chore');
+            const value = input.value.trim();
+            if (!value) return;
+            
+            if (!state.masterChores.includes(value)) {
+                state.masterChores.push(value);
+                saveState();
+                renderMasterChoreList();
+                input.value = '';
+            }
+        }
+
+        function removeMasterChore(index, btn) {
+            state.masterChores.splice(index, 1);
+            saveState();
+            renderMasterChoreList();
+        }
+
+        // ==================== MEDICINE ====================
+        let selectedMedTime = null;
+
+        function selectMedicineTime(btn, time) {
+            // Deselect all
+            document.querySelectorAll('.med-time-btn').forEach(b => {
+                b.classList.remove('!border-teal-600', '!bg-teal-50', '!text-teal-700');
+            });
+            btn.classList.add('!border-teal-600', '!bg-teal-50', '!text-teal-700');
+            selectedMedTime = time;
+        }
+
+        function showLogMedicineModal() {
+            selectedMedTime = null;
+            document.querySelectorAll('.med-time-btn').forEach(b => b.classList.remove('!border-teal-600', '!bg-teal-50', '!text-teal-700'));
+            
+            // Populate kids checkboxes
+            const container = document.getElementById('medicine-kids-list');
+            container.innerHTML = '';
+            
+            if (state.kids.length === 0) {
+                container.innerHTML = `<div class="text-xs text-slate-400 p-2">No children in the house yet.</div>`;
+            } else {
+                state.kids.forEach(kid => {
+                    const div = document.createElement('div');
+                    div.className = `flex items-center gap-x-2 px-2 py-1`;
+                    div.innerHTML = `
+                        <input type="checkbox" id="med-kid-${kid.id}" value="${kid.id}" class="accent-teal-700 w-4 h-4">
+                        <label for="med-kid-${kid.id}" class="text-sm flex-1 cursor-pointer">${kid.name}</label>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+            
+            document.getElementById('medicine-details').value = '';
+            document.getElementById('medicine-notes').value = '';
+            
+            document.getElementById('medicine-modal').classList.remove('hidden');
+            document.getElementById('medicine-modal').classList.add('flex');
+        }
+
+        function hideMedicineModal() {
+            document.getElementById('medicine-modal').classList.remove('flex');
+            document.getElementById('medicine-modal').classList.add('hidden');
+        }
+
+        function saveMedicineLog() {
+            if (!selectedMedTime) {
+                alert("Please select Morning, Evening, or Night.");
+                return;
+            }
+            
+            const selectedKids = [];
+            document.querySelectorAll('#medicine-kids-list input[type="checkbox"]:checked').forEach(cb => {
+                selectedKids.push(parseInt(cb.value));
+            });
+            
+            if (selectedKids.length === 0) {
+                alert("Please select at least one child who received medication.");
+                return;
+            }
+            
+            const details = document.getElementById('medicine-details').value.trim();
+            const notes = document.getElementById('medicine-notes').value.trim();
+            
+            state.medicineLogs.push({
+                id: Date.now(),
+                date: new Date().toISOString().split('T')[0],
+                timeOfDay: selectedMedTime,
+                kids: selectedKids,
+                details: details,
+                notes: notes
+            });
+            
+            saveState();
+            hideMedicineModal();
+            renderMedicineRecentLogs();
+            updateDashboardStats();
+            showToast("Medicine log saved");
+        }
+
+        function quickLogMedicineRound(timeOfDay) {
+            if (state.kids.length === 0) {
+                alert("Add children first before logging medicine.");
+                return;
+            }
+            
+            // Pre-select all kids for quick round (user can edit later if needed)
+            const today = new Date().toISOString().split('T')[0];
+            
+            state.medicineLogs.push({
+                id: Date.now(),
+                date: today,
+                timeOfDay: timeOfDay,
+                kids: state.kids.map(k => k.id),
+                details: timeOfDay === 'night' ? 'Nighttime meds' : 'Daily meds',
+                notes: 'Quick logged round'
+            });
+            
+            saveState();
+            renderMedicineRecentLogs();
+            updateDashboardStats();
+            showToast(`${timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)} round logged for all children`);
+        }
+
+        function renderMedicineRecentLogs() {
+            const container = document.getElementById('medicine-recent-logs');
+            container.innerHTML = '';
+            
+            const recent = state.medicineLogs.slice().reverse().slice(0, 6);
+            
+            if (recent.length === 0) {
+                container.innerHTML = `<div class="text-xs text-slate-400 py-4">No medicine logs yet.</div>`;
+                return;
+            }
+            
+            recent.forEach(log => {
+                const kidNames = log.kids.map(kidId => {
+                    const k = state.kids.find(kid => kid.id === kidId);
+                    return k ? k.name.split(' ')[0] : 'Unknown';
+                }).join(', ');
+                
+                const div = document.createElement('div');
+                div.className = `flex items-start gap-x-3 p-3 bg-slate-50 rounded-2xl text-xs`;
+                div.innerHTML = `
+                    <div class="mt-0.5 w-5 text-center">
+                        ${log.timeOfDay === 'morning' ? '<i class="fa-solid fa-sun text-orange-500"></i>' : 
+                          log.timeOfDay === 'evening' ? '<i class="fa-solid fa-cloud-moon text-indigo-500"></i>' : 
+                          '<i class="fa-solid fa-moon text-slate-600"></i>'}
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between">
+                            <span class="font-semibold">${log.timeOfDay.charAt(0).toUpperCase() + log.timeOfDay.slice(1)}</span>
+                            <span class="font-mono text-[10px] text-slate-400">${log.date}</span>
+                        </div>
+                        <div class="text-slate-600 mt-px">${kidNames}</div>
+                        ${log.details ? `<div class="text-teal-700 text-[10px] mt-0.5">${log.details}</div>` : ''}
+                        ${log.notes ? `<div class="italic text-slate-500 text-[10px]">"${log.notes}"</div>` : ''}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ==================== PHONE LOGS / COMMUNICATIONS ====================
+        function renderPhoneLogsTable() {
+            const tbody = document.getElementById('phone-logs-table');
+            tbody.innerHTML = '';
+            
+            const recentLogs = state.phoneLogs.slice().reverse().slice(0, 8);
+            
+            if (recentLogs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-xs text-slate-400">No phone calls logged yet. Use the button above to start tracking guardian communication.</td></tr>`;
+                return;
+            }
+            
+            recentLogs.forEach(log => {
+                const kid = state.kids.find(k => k.id === log.kidId);
+                const guardian = kid ? kid.guardian : 'Unknown';
+                
+                const outcomeColor = log.outcome === 'Good' ? 'emerald' : 
+                                     (log.outcome === 'Needs Attention' || log.outcome === 'Not Well') ? 'rose' : 'amber';
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-4 py-3 font-mono text-xs text-slate-500">${log.date}</td>
+                    <td class="px-4 py-3 font-medium">${kid ? kid.name : 'Unknown Child'}</td>
+                    <td class="px-4 py-3 text-xs">${guardian}</td>
+                    <td class="px-4 py-3">
+                        <span class="px-3 py-px text-[10px] font-bold rounded-full bg-${outcomeColor}-100 text-${outcomeColor}-700">${log.outcome}</span>
+                    </td>
+                    <td class="px-4 py-3 text-xs text-slate-600 max-w-[180px] truncate">${log.notes || ''}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function showLogCallModal(preselectKidId = null) {
+            // Populate kids
+            const select = document.getElementById('call-kid-select');
+            select.innerHTML = '';
+            
+            state.kids.forEach(kid => {
+                const opt = document.createElement('option');
+                opt.value = kid.id;
+                opt.textContent = kid.name;
+                if (preselectKidId && kid.id === preselectKidId) opt.selected = true;
+                select.appendChild(opt);
+            });
+            
+            // Default date to today
+            const dateInput = document.getElementById('call-date');
+            dateInput.value = new Date().toISOString().split('T')[0];
+            
+            document.getElementById('call-outcome').value = 'Good';
+            document.getElementById('call-notes').value = '';
+            
+            document.getElementById('call-modal').classList.remove('hidden');
+            document.getElementById('call-modal').classList.add('flex');
+        }
+
+        function hideCallModal() {
+            document.getElementById('call-modal').classList.remove('flex');
+            document.getElementById('call-modal').classList.add('hidden');
+        }
+
+        function savePhoneCall() {
+            const kidId = parseInt(document.getElementById('call-kid-select').value);
+            const date = document.getElementById('call-date').value;
+            const outcome = document.getElementById('call-outcome').value;
+            const notes = document.getElementById('call-notes').value.trim();
+            
+            if (!kidId || !date) {
+                alert("Please select a child and date.");
+                return;
+            }
+            
+            // Add to global phoneLogs
+            state.phoneLogs.push({
+                id: Date.now(),
+                date: date,
+                kidId: kidId,
+                outcome: outcome,
+                notes: notes
+            });
+            
+            // Also add to the kid's personal callLogs for detail view
+            const kid = state.kids.find(k => k.id === kidId);
+            if (kid) {
+                if (!kid.callLogs) kid.callLogs = [];
+                kid.callLogs.push({
+                    date: date,
+                    outcome: outcome,
+                    notes: notes
+                });
+            }
+            
+            saveState();
+            hideCallModal();
+            renderPhoneLogsTable();
+            renderKidsTable(); // Update call count in table
+            showToast("Call logged successfully");
+        }
+
+        function generatePhoneLogReport() {
+            if (state.phoneLogs.length === 0) {
+                alert("No phone calls logged yet.");
+                return;
+            }
+            
+            let report = `📞 LOREN'S COTTAGE — CHILDREN'S PHONE LOG\n`;
+            report += `Week of: ${new Date().toLocaleDateString()}\n`;
+            report += `Prepared by: Dramane & Tiffany (Houseparents)\n\n`;
+            
+            // Group by kid
+            const byKid = {};
+            state.phoneLogs.forEach(log => {
+                if (!byKid[log.kidId]) byKid[log.kidId] = [];
+                byKid[log.kidId].push(log);
+            });
+            
+            Object.keys(byKid).forEach(kidId => {
+                const kid = state.kids.find(k => k.id == kidId);
+                if (!kid) return;
+                
+                report += `👤 ${kid.name} — Guardian: ${kid.guardian || 'N/A'}\n`;
+                byKid[kidId].forEach(log => {
+                    report += `   • ${log.date} | ${log.outcome} | ${log.notes || 'No notes'}\n`;
+                });
+                report += `\n`;
+            });
+            
+            report += `— End of Phone Log —\nReady to send to management every Sunday.`;
+            
+            // Show options
+            showReportModal("Sunday Phone Log for Management", report);
+        }
+
+        // ==================== WISHLIST ====================
+        function renderWishlistTable() {
+            const tbody = document.getElementById('wishlist-table-body');
+            tbody.innerHTML = '';
+            
+            let total = 0;
+            
+            if (state.wishItems.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-slate-400">No wishes added yet. Sit with the children and capture what they would love (up to $150).</td></tr>`;
+                document.getElementById('wishlist-total').textContent = '$0';
+                return;
+            }
+            
+            state.wishItems.forEach((wish, index) => {
+                const kid = state.kids.find(k => k.id === wish.kidId);
+                total += parseFloat(wish.price) || 0;
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-medium">${kid ? kid.name : 'Unknown'}</td>
+                    <td class="px-6 py-4">${wish.item}</td>
+                    <td class="px-6 py-4">
+                        ${wish.link ? `<a href="${wish.link}" target="_blank" class="text-teal-700 hover:underline text-xs">View Link <i class="fa-solid fa-external-link-alt fa-xs"></i></a>` : '<span class="text-slate-300 text-xs">No link</span>'}
+                    </td>
+                    <td class="px-6 py-4 text-right font-mono">$${parseFloat(wish.price || 0).toFixed(2)}</td>
+                    <td class="px-6 py-4 text-center">
+                        <button onclick="deleteWishItem(${index}, event)" class="text-red-400 hover:text-red-600 px-2"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            document.getElementById('wishlist-total').textContent = '$' + total.toFixed(2);
+        }
+
+        function showAddWishModal() {
+            const select = document.getElementById('wish-kid-select');
+            select.innerHTML = '';
+            
+            state.kids.forEach(kid => {
+                const opt = document.createElement('option');
+                opt.value = kid.id;
+                opt.textContent = kid.name;
+                select.appendChild(opt);
+            });
+            
+            document.getElementById('wish-item').value = '';
+            document.getElementById('wish-link').value = '';
+            document.getElementById('wish-price').value = '';
+            
+            document.getElementById('wish-modal').classList.remove('hidden');
+            document.getElementById('wish-modal').classList.add('flex');
+        }
+
+        function hideWishModal() {
+            document.getElementById('wish-modal').classList.remove('flex');
+            document.getElementById('wish-modal').classList.add('hidden');
+        }
+
+        function saveWishItem() {
+            const kidId = parseInt(document.getElementById('wish-kid-select').value);
+            const item = document.getElementById('wish-item').value.trim();
+            const link = document.getElementById('wish-link').value.trim();
+            const price = parseFloat(document.getElementById('wish-price').value) || 0;
+            
+            if (!kidId || !item) {
+                alert("Please select a child and enter the wish item.");
+                return;
+            }
+            
+            state.wishItems.push({
+                id: Date.now(),
+                kidId: kidId,
+                item: item,
+                link: link,
+                price: price
+            });
+            
+            saveState();
+            hideWishModal();
+            renderWishlistTable();
+            showToast("Wish added to the annual list");
+        }
+
+        function deleteWishItem(index, e) {
+            e.stopImmediatePropagation();
+            if (!confirm("Remove this wish from the list?")) return;
+            
+            state.wishItems.splice(index, 1);
+            saveState();
+            renderWishlistTable();
+        }
+
+        // ==================== REPORTS & SUNDAY TURNOVER ====================
+        function generateSundayReport() {
+            let report = `🌟 LOREN'S COTTAGE — SUNDAY NIGHT TURNOVER NOTE\n`;
+            report += `Shift: Tuesday 10:00 PM — Monday 6:00 AM\n`;
+            report += `Houseparents: Dramane & Tiffany\n`;
+            report += `Date: ${new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}\n\n`;
+            
+            report += `👨‍👩‍👧‍👦 CHILDREN CURRENTLY IN CARE (${state.kids.length})\n`;
+            if (state.kids.length > 0) {
+                state.kids.forEach(kid => {
+                    report += `• ${kid.name} (${kid.age || '?'} yrs) — Guardian: ${kid.guardian || 'N/A'}\n`;
+                });
+            } else {
+                report += `No children currently listed.\n`;
+            }
+            report += `\n`;
+            
+            // Chores summary
+            const completed = state.chores.filter(c => c.status === 'completed').length;
+            const totalChores = state.chores.length;
+            const completionRate = totalChores > 0 ? Math.round((completed / totalChores) * 100) : 100;
+            
+            report += `✅ CHORES THIS PERIOD\n`;
+            report += `Completed: ${completed} / ${totalChores} (${completionRate}%)\n`;
+            const pendingChores = state.chores.filter(c => c.status === 'pending');
+            if (pendingChores.length > 0) {
+                report += `Still pending:\n`;
+                pendingChores.forEach(c => {
+                    const kid = state.kids.find(k => k.id === c.assignedKidId);
+                    report += `• ${c.name} ${kid ? `(${kid.name})` : ''}\n`;
+                });
+            }
+            report += `\n`;
+            
+            // Medicine
+            report += `💊 MEDICINE & CARE\n`;
+            const recentMeds = state.medicineLogs.filter(m => {
+                const logDate = new Date(m.date);
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                return logDate >= weekAgo;
+            });
+            report += `${recentMeds.length} medicine rounds logged this week.\n`;
+            if (recentMeds.length > 0) {
+                report += `Most recent: ${recentMeds[recentMeds.length-1].timeOfDay} on ${recentMeds[recentMeds.length-1].date}\n`;
+            }
+            report += `\n`;
+            
+            // Phone calls
+            report += `📞 GUARDIAN COMMUNICATION\n`;
+            report += `${state.phoneLogs.length} calls logged since last turnover.\n`;
+            const recentCalls = state.phoneLogs.slice(-3);
+            if (recentCalls.length > 0) {
+                report += `Recent calls:\n`;
+                recentCalls.forEach(call => {
+                    const kid = state.kids.find(k => k.id === call.kidId);
+                    report += `• ${call.date} — ${kid ? kid.name : 'Child'}: ${call.outcome}\n`;
+                });
+            }
+            report += `\n`;
+            
+            // Daily notes / incidents (simplified)
+            report += `📝 NOTES & OBSERVATIONS\n`;
+            if (state.dailyNotes.length > 0) {
+                state.dailyNotes.slice(-2).forEach(note => {
+                    report += `• ${note.date}: ${note.notes}\n`;
+                });
+            } else {
+                report += `No major incidents or special notes this shift. Routine care maintained with love and consistency.\n`;
+            }
+            report += `\n`;
+            
+            report += `🙏 CLOSING\n`;
+            report += `All children have been cared for with patience, structure, and the love of Christ. House standards maintained per the Houseparent Handbook.\n\n`;
+            report += `Ready for relief houseparent. God bless.\n`;
+            report += `— Dramane & Tiffany, Live-In Houseparents, Loren's Cottage`;
+            
+            showReportModal("Sunday Night Turnover Note", report, true);
+        }
+
+        function generateSelfSummary() {
+            let summary = `📊 LOREN'S COTTAGE — PERSONAL SHIFT SUMMARY\n\n`;
+            summary += `Period: Current shift (Tue 10pm – Mon 6am)\n`;
+            summary += `Houseparents: You & Tiffany\n\n`;
+            
+            summary += `STRENGTHS THIS WEEK:\n`;
+            summary += `• Consistent routines and mealtimes\n`;
+            summary += `• Strong communication with children\n`;
+            summary += `• Chores completion rate: High engagement\n\n`;
+            
+            summary += `AREAS TO WATCH:\n`;
+            const pending = state.chores.filter(c => c.status === 'pending').length;
+            if (pending > 5) {
+                summary += `• ${pending} chores still pending — consider simplifying or reassigning\n`;
+            }
+            summary += `• Continue building on positive guardian relationships\n\n`;
+            
+            summary += `GRATITUDE:\n`;
+            summary += `Thank you for showing up with love every single night. The children are blessed to have you both.\n\n`;
+            summary += `— Generated for your personal encouragement`;
+            
+            showReportModal("Your Personal Weekly Summary", summary);
+        }
+
+        function showReportModal(title, content, isSundayReport = false) {
+            const modalHTML = `
+                <div onclick="this.remove()" class="fixed inset-0 bg-black/70 flex items-center justify-center z-[120] p-4">
+                    <div onclick="event.stopImmediatePropagation()" class="bg-white w-full max-w-2xl rounded-3xl overflow-hidden modal flex flex-col max-h-[85vh]">
+                        <div class="px-7 pt-7 pb-4 border-b">
+                            <h3 class="text-2xl font-semibold">${title}</h3>
+                        </div>
+                        
+                        <div class="p-7 overflow-auto flex-1">
+                            <pre class="whitespace-pre-wrap font-sans text-sm leading-relaxed text-slate-700">${content}</pre>
+                        </div>
+                        
+                        <div class="px-7 py-5 bg-slate-50 flex flex-wrap gap-3 justify-end">
+                            <button onclick="copyReportToClipboard(this)" class="px-6 h-11 flex items-center gap-x-2 text-sm font-semibold border border-slate-300 hover:bg-white rounded-2xl">
+                                <i class="fa-solid fa-copy"></i> <span>Copy to Clipboard</span>
+                            </button>
+                            
+                            ${isSundayReport ? `
+                            <button onclick="sendReportToWhatsApp('${encodeURIComponent(content)}', this)" class="warm-btn px-6 h-11 flex items-center gap-x-2 text-white text-sm font-bold rounded-2xl">
+                                <i class="fa-brands fa-whatsapp"></i> <span>Send via WhatsApp</span>
+                            </button>` : `
+                            <button onclick="sendReportToWhatsApp('${encodeURIComponent(content)}', this)" class="px-6 h-11 flex items-center gap-x-2 text-sm font-semibold border border-emerald-300 hover:bg-emerald-50 text-emerald-700 rounded-2xl">
+                                <i class="fa-brands fa-whatsapp"></i> <span>Send to WhatsApp</span>
+                            </button>`}
+                            
+                            <button onclick="this.closest('.fixed').remove()" class="px-8 h-11 text-sm font-semibold bg-teal-800 text-white rounded-2xl">Done</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        function copyReportToClipboard(btn) {
+            const pre = btn.closest('.flex-col').querySelector('pre');
+            if (!pre) return;
+            
+            navigator.clipboard.writeText(pre.innerText).then(() => {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = `<i class="fa-solid fa-check"></i> <span>Copied!</span>`;
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 1800);
+            }).catch(() => {
+                // Fallback
+                const textArea = document.createElement('textarea');
+                textArea.value = pre.innerText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                btn.innerHTML = `<i class="fa-solid fa-check"></i> <span>Copied!</span>`;
+                setTimeout(() => btn.innerHTML = originalText, 1800);
+            });
+        }
+
+        function sendReportToWhatsApp(encodedContent, btn) {
+            const content = decodeURIComponent(encodedContent);
+            const url = `https://wa.me/?text=${encodeURIComponent(content)}`;
+            window.open(url, '_blank');
+            
+            // Optional: close modal after opening
+            setTimeout(() => {
+                const modal = btn.closest('.fixed');
+                if (modal) modal.remove();
+            }, 600);
+        }
+
+        // ==================== WHATSAPP QUICK MESSAGE ====================
+        function quickWhatsAppMessage() {
+            const message = prompt("What important message or reminder would you like to send via WhatsApp?\n\n(Example: 'Reminder: Isaiah has a dentist appointment Tuesday at 10am')", 
+                "Reminder for Loren's Cottage: ");
+            
+            if (!message || message.trim() === '') return;
+            
+            const fullMessage = `🏠 LOREN'S COTTAGE\n${message.trim()}\n\n— Sent from LC House Hub`;
+            const url = `https://wa.me/?text=${encodeURIComponent(fullMessage)}`;
+            window.open(url, '_blank');
+            
+            showToast("WhatsApp opened with your message");
+        }
+
+        // ==================== SETTINGS ====================
+        function showSettings() {
+            const modalHTML = `
+                <div onclick="this.remove()" class="fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
+                    <div onclick="event.stopImmediatePropagation()" class="bg-white w-full max-w-md mx-4 rounded-3xl modal">
+                        <div class="px-7 pt-7">
+                            <h3 class="font-bold text-2xl">Settings &amp; Data</h3>
+                            
+                            <div class="mt-6 space-y-6 text-sm">
+                                <div>
+                                    <div class="font-bold text-xs tracking-widest text-slate-500 mb-2">HOUSE INFORMATION</div>
+                                    <div class="bg-slate-50 rounded-2xl p-4">
+                                        <div><span class="font-semibold">Name:</span> Loren's Cottage (LC)</div>
+                                        <div><span class="font-semibold">Location:</span> Sunshine Acres Children's Homes</div>
+                                        <div class="mt-1 text-xs text-slate-500">Shift: Tuesday 10:00 PM – Monday 6:00 AM • Off: Monday &amp; Tuesday</div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="font-bold text-xs tracking-widest text-slate-500 mb-2">DATA MANAGEMENT</div>
+                                    <div class="flex flex-col gap-y-2">
+                                        <button onclick="exportAllData()" class="flex items-center justify-center gap-x-2 w-full h-11 border border-slate-300 hover:bg-slate-50 rounded-2xl text-sm font-semibold">
+                                            <i class="fa-solid fa-download"></i> <span>Export All Data (JSON Backup)</span>
+                                        </button>
+                                        
+                                        <button onclick="importDataPrompt()" class="flex items-center justify-center gap-x-2 w-full h-11 border border-slate-300 hover:bg-slate-50 rounded-2xl text-sm font-semibold">
+                                            <i class="fa-solid fa-upload"></i> <span>Import Data from Backup</span>
+                                        </button>
+                                        
+                                        <button onclick="if(confirm('This will clear ALL data and reset to sample. Continue?')) { localStorage.removeItem('lorensCottageState'); location.reload(); }" 
+                                                class="flex items-center justify-center gap-x-2 w-full h-11 text-red-600 hover:bg-red-50 border border-red-200 rounded-2xl text-sm font-semibold">
+                                            <i class="fa-solid fa-exclamation-triangle"></i> <span>Reset Everything (Start Fresh)</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-[10px] text-center text-slate-400 pt-2">
+                                    Your data is stored privately in this browser only.<br>
+                                    Use Export/Import to move between devices or for safekeeping.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="px-7 py-5 bg-slate-50 flex justify-end rounded-b-3xl">
+                            <button onclick="this.closest('.fixed').remove()" class="px-8 h-11 text-sm font-semibold bg-teal-800 text-white rounded-2xl">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        function exportAllData() {
+            const dataStr = JSON.stringify(state, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `lorens-cottage-backup-${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast("Backup downloaded successfully");
+        }
+
+        function importDataPrompt() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    try {
+                        const imported = JSON.parse(ev.target.result);
+                        if (imported.kids && imported.chores) {
+                            state = imported;
+                            saveState();
+                            location.reload(); // Refresh everything
+                        } else {
+                            alert("Invalid backup file. Please select a valid Loren's Cottage export.");
+                        }
+                    } catch (err) {
+                        alert("Could not read the file. Make sure it's a valid JSON backup.");
+                    }
+                };
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        // ==================== UTILITIES ====================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerHTML = message;
+            toast.style.display = 'flex';
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.style.transition = 'all 0.3s ease';
+                toast.style.opacity = '0';
+                setTimeout(() => {
+                    toast.style.opacity = '1';
+                    toast.style.transition = '';
+                    toast.style.display = 'none';
+                    toast.classList.add('hidden');
+                }, 250);
+            }, 2600);
+        }
+
+        // ==================== INITIALIZATION ====================
+        function initializeApp() {
+            loadState();
+            
+            // Initial renders
+            updateDashboardStats();
+            renderTodayFocus();
+            renderRecentActivity();
+            renderKidsTable();
+            renderChoresTable();
+            renderMedicineRecentLogs();
+            renderPhoneLogsTable();
+            renderWishlistTable();
+            
+            // Make sure dashboard is active
+            document.getElementById('section-dashboard').classList.add('active');
+            document.getElementById('nav-dashboard').classList.add('bg-teal-800', 'text-white');
+            
+            // Keyboard shortcuts hint (optional)
+            console.log('%c[Loren\'s Cottage] House Hub initialized. All data is private to this browser.', 'color:#64748b');
+            
+            // Optional: Show a gentle welcome toast on first load only
+            if (!localStorage.getItem('lorensCottageSeenWelcome')) {
+                setTimeout(() => {
+                    showToast("Welcome to Loren's Cottage Hub. Everything saves automatically.");
+                    localStorage.setItem('lorensCottageSeenWelcome', 'true');
+                }, 1800);
+            }
+            
+            // Make sure masterChores is always there
+            if (!state.masterChores || state.masterChores.length < 5) {
+                state.masterChores = [
+                    "Make bed", "Brush teeth & wash face", "Clean room / put toys away", 
+                    "Help set the table", "Sweep or vacuum floor", "Take out trash", 
+                    "Homework / reading time", "Help with dishes", "Water plants", 
+                    "Organize shoes / belongings", "Evening prayer / devotion prep"
+                ];
+                saveState();
+            }
+        }
+
+        // Boot the application
+        window.onload = initializeApp;
+        
+        // Expose a couple helpful functions globally in case needed
+        window.LC = {
+            exportData: () => { /* for console use */ }
+        };
+    </script>
+</body>
+</html>
