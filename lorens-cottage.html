@@ -10,7 +10,7 @@
         body { font-family: 'Inter', system_ui, sans-serif; }
         .section { display: none; }
         .section.active { display: block; }
-        .warm-btn { background: linear-gradient(to right, #0f766e, #134e4b); transition: all 0.2s ease; }
+        .warm-btn { background: linear-gradient(to right, #0f766e, #134e4b); }
         .warm-btn:hover { transform: translateY(-1px); }
     </style>
 </head>
@@ -117,10 +117,25 @@
         <!-- COMMUNICATIONS -->
         <div id="section-communications" class="section">
             <h2 class="text-2xl font-semibold mb-4">Quick Links</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <button onclick="window.open('https://app.teamup.com/', '_blank')" class="p-4 bg-emerald-50 rounded-2xl text-left font-semibold">Open TeamUp</button>
                 <button onclick="window.open('https://slack.com', '_blank')" class="p-4 bg-purple-50 rounded-2xl text-left font-semibold">Open Slack</button>
                 <button onclick="window.open('https://outlook.office.com', '_blank')" class="p-4 bg-blue-50 rounded-2xl text-left font-semibold">Open Outlook</button>
+            </div>
+            
+            <div class="bg-white rounded-3xl border p-6">
+                <div class="flex justify-between mb-4">
+                    <h3 class="font-bold">Phone Call Log</h3>
+                    <button onclick="showLogCallModal()" class="warm-btn px-4 h-9 text-white rounded-2xl text-sm">+ Log Call</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="text-xs text-slate-500 border-b">
+                            <tr><th class="text-left py-2 px-3">Date</th><th class="text-left py-2 px-3">Child</th><th class="text-left py-2 px-3">Guardian Called</th><th class="text-center py-2 px-3">Outcome</th></tr>
+                        </thead>
+                        <tbody id="phone-logs-table" class="text-xs divide-y"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -137,7 +152,7 @@
         </div>
     </div>
 
-    <!-- Kid Modal -->
+    <!-- Modals -->
     <div id="kid-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
         <div class="bg-white w-full max-w-lg mx-4 rounded-3xl p-7">
             <h3 class="text-xl font-semibold mb-4">Add/Edit Child</h3>
@@ -153,21 +168,35 @@
         </div>
     </div>
 
+    <!-- Log Call Modal with individual guardian selection -->
+    <div id="call-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
+        <div class="bg-white w-full max-w-md mx-4 rounded-3xl p-7">
+            <h3 class="text-xl font-semibold mb-4">Log Guardian Call</h3>
+            <select id="call-kid-select" class="w-full border p-3 rounded-2xl mb-3"></select>
+            <input id="call-guardian-name" placeholder="Exact guardian you called (e.g. Aunt Patricia Hillman)" class="w-full border p-3 rounded-2xl mb-3">
+            <div class="grid grid-cols-2 gap-3 mb-3">
+                <input id="call-date" type="date" class="border p-3 rounded-2xl">
+                <select id="call-outcome" class="border p-3 rounded-2xl">
+                    <option value="Good">Good / Positive</option>
+                    <option value="Okay">Okay / Neutral</option>
+                    <option value="Needs Attention">Needs Attention</option>
+                    <option value="Not Well">Not Well</option>
+                </select>
+            </div>
+            <textarea id="call-notes" placeholder="Notes from the call..." class="w-full border p-3 rounded-2xl mb-4" rows="3"></textarea>
+            <div class="flex justify-end gap-x-3">
+                <button onclick="hideCallModal()" class="px-6 py-2">Cancel</button>
+                <button onclick="savePhoneCall()" class="warm-btn px-6 py-2 text-white rounded-2xl">Save Call</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast" class="hidden fixed bottom-5 right-5 bg-teal-900 text-white px-6 py-3 rounded-3xl flex items-center gap-x-2">
         <span id="toast-message"></span>
     </div>
 
     <script>
-        let state = {
-            kids: [],
-            chores: [],
-            medicineLogs: [],
-            phoneLogs: [],
-            incidents: [],
-            wishItems: [],
-            todaySchedule: "",
-            dailyGeneralNotes: ""
-        };
+        let state = { kids: [], chores: [], medicineLogs: [], phoneLogs: [], incidents: [], wishItems: [], todaySchedule: "", dailyGeneralNotes: "" };
 
         function saveState() { localStorage.setItem('lorensCottageState', JSON.stringify(state)); }
 
@@ -179,11 +208,11 @@
 
         function seedRealData() {
             state.kids = [
-                { id: 101, name: "Xochtli Ordaz", age: 13, guardian: "Luis Ordaz (Dad)", phone: "602-800-8717", notes: "Uncle Jeremy: 602-551-4186\nTia Nancy: (602) 641-1658\nGrandparents: 623-920-5553\nRoseanne Garcia - Not approved", callLogs: [] },
-                { id: 102, name: "Melody Hernandez", age: 12, guardian: "Maritza Hernandez (Mom)", phone: "(623) 986-3010", notes: "Primo (Uncle): (602) 466-4642\nLuna (sister): (928) 231-6667\nElena Sevilla - Unapproved", callLogs: [] },
+                { id: 101, name: "Xochtli Ordaz", age: 13, guardian: "Luis Ordaz (Dad)", phone: "602-800-8717", notes: "Uncle Jeremy: 602-551-4186\nTia Nancy: (602) 641-1658\nRoseanne Garcia - Not approved", callLogs: [] },
+                { id: 102, name: "Melody Hernandez", age: 12, guardian: "Maritza Hernandez (Mom)", phone: "(623) 986-3010", notes: "Primo: (602) 466-4642\nElena Sevilla - Unapproved", callLogs: [] },
                 { id: 103, name: "A'Niya Jackson", age: 12, guardian: "Shantaze Jackson (Mom)", phone: "623-764-7040", notes: "Special number: (480) 442-3270", callLogs: [] },
                 { id: 104, name: "Truth Sutton", age: 7, guardian: "Aleesa Baker (Mom)", phone: "602-349-8846", notes: "Joseph Barrientes (Emergency)", callLogs: [] },
-                { id: 105, name: "Gianna Taylor", age: 13, guardian: "Dan Taylor", phone: "(480) 220-7392", notes: "GiGi Taylor: (480) 263-1844\nRuss Taylor: 480-707-3647", callLogs: [] }
+                { id: 105, name: "Gianna Taylor", age: 13, guardian: "Dan Taylor", phone: "(480) 220-7392", notes: "GiGi: (480) 263-1844", callLogs: [] }
             ];
             saveState();
         }
@@ -192,7 +221,6 @@
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById('section-' + section).classList.add('active');
             if (section === 'children') renderKidsTable();
-            if (section === 'chores') renderChoresTable();
             if (section === 'incidents') renderIncidentsTable();
         }
 
@@ -202,12 +230,7 @@
             state.kids.forEach(kid => {
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-teal-50 cursor-pointer';
-                tr.innerHTML = `
-                    <td class="px-6 py-3 font-semibold">${kid.name}</td>
-                    <td class="px-6 py-3">${kid.age} yrs</td>
-                    <td class="px-6 py-3">${kid.guardian}</td>
-                    <td class="px-6 py-3">${kid.phone}</td>
-                `;
+                tr.innerHTML = `<td class="px-6 py-3 font-semibold">${kid.name}</td><td class="px-6 py-3">${kid.age} yrs</td><td class="px-6 py-3">${kid.guardian}</td><td class="px-6 py-3">${kid.phone}</td>`;
                 tr.onclick = () => showKidDetail(kid.id);
                 tbody.appendChild(tr);
             });
@@ -216,64 +239,28 @@
         function showKidDetail(id) {
             const kid = state.kids.find(k => k.id === id);
             if (!kid) return;
-            const modal = document.createElement('div');
-            modal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-[110] p-4';
-            modal.innerHTML = `
-                <div class="bg-white w-full max-w-lg rounded-3xl p-7">
-                    <h3 class="text-2xl font-semibold">${kid.name}</h3>
-                    <p class="text-teal-700">${kid.age} years old</p>
-                    
-                    <div class="mt-5">
-                        <div class="text-xs text-slate-500 font-bold">MAIN GUARDIAN</div>
-                        <div class="font-semibold">${kid.guardian}</div>
-                        <div class="font-mono text-teal-700">${kid.phone}</div>
-                    </div>
-                    
-                    ${kid.notes ? `
-                    <div class="mt-5">
-                        <div class="text-xs text-slate-500 font-bold">OTHER FAMILY / CONTACTS</div>
-                        <div class="bg-slate-50 rounded-2xl p-4 text-sm whitespace-pre-line">${kid.notes}</div>
-                    </div>` : ''}
-                    
-                    <div class="mt-6 flex justify-end">
-                        <button onclick="this.closest('.fixed').remove()" class="px-6 py-2 bg-teal-800 text-white rounded-2xl">Close</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
+            alert(`Child: ${kid.name}\nMain Guardian: ${kid.guardian}\nPhone: ${kid.phone}\n\nOther Contacts:\n${kid.notes || 'None'}`);
         }
 
         function showAddKidModal() { document.getElementById('kid-modal').classList.remove('hidden'); }
         function hideKidModal() { document.getElementById('kid-modal').classList.add('hidden'); }
         function saveKid() {
             const name = document.getElementById('kid-name').value.trim();
-            if (!name) return alert("Name is required");
+            if (!name) return;
             state.kids.push({
-                id: Date.now(),
-                name: name,
-                age: document.getElementById('kid-age').value,
-                guardian: document.getElementById('kid-guardian').value,
-                phone: document.getElementById('kid-phone').value,
-                notes: document.getElementById('kid-notes').value,
-                callLogs: []
+                id: Date.now(), name, age: document.getElementById('kid-age').value,
+                guardian: document.getElementById('kid-guardian').value, phone: document.getElementById('kid-phone').value,
+                notes: document.getElementById('kid-notes').value, callLogs: []
             });
-            saveState();
-            hideKidModal();
-            renderKidsTable();
-        }
-
-        function renderChoresTable() {
-            const tbody = document.getElementById('chores-table-body');
-            tbody.innerHTML = '<tr><td class="px-6 py-8 text-center text-slate-400">Chores system is ready. Add new chores using the button above.</td></tr>';
+            saveState(); hideKidModal(); renderKidsTable();
         }
 
         function showAddChoreModal() {
             const name = prompt("Chore name:");
             if (!name) return;
             state.chores = state.chores || [];
-            state.chores.push({ id: Date.now(), name: name, assignedKidId: null, status: "pending", notes: "" });
+            state.chores.push({ id: Date.now(), name, assignedKidId: null, status: "pending", notes: "" });
             saveState();
-            renderChoresTable();
         }
 
         function renderIncidentsTable() {
@@ -282,13 +269,7 @@
                 tbody.innerHTML = '<tr><td class="px-6 py-8 text-center text-slate-400">No incidents logged yet.</td></tr>';
                 return;
             }
-            tbody.innerHTML = state.incidents.map(i => `
-                <tr>
-                    <td class="px-5 py-3">${i.date}</td>
-                    <td class="px-5 py-3">${i.childName}</td>
-                    <td class="px-5 py-3">${i.description}</td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = state.incidents.map(i => `<tr><td class="px-5 py-3">${i.date}</td><td class="px-5 py-3">${i.childName}</td><td class="px-5 py-3">${i.description}</td></tr>`).join('');
         }
 
         function showAddIncidentModal() {
@@ -296,52 +277,65 @@
             const desc = prompt("What happened?");
             if (!child || !desc) return;
             state.incidents = state.incidents || [];
-            state.incidents.push({
-                id: Date.now(),
-                date: new Date().toISOString().split('T')[0],
-                childName: child,
-                description: desc
+            state.incidents.push({ id: Date.now(), date: new Date().toISOString().split('T')[0], childName: child, description: desc });
+            saveState(); renderIncidentsTable();
+        }
+
+        function saveDailySchedule() { state.todaySchedule = document.getElementById('today-schedule').value; saveState(); alert("Schedule saved"); }
+        function saveDailyFeedback() { state.dailyGeneralNotes = document.getElementById('daily-general-notes').value; saveState(); alert("Feedback saved"); }
+
+        function showLogCallModal() {
+            const select = document.getElementById('call-kid-select');
+            select.innerHTML = '';
+            state.kids.forEach(kid => {
+                const opt = document.createElement('option');
+                opt.value = kid.id;
+                opt.textContent = kid.name;
+                select.appendChild(opt);
             });
-            saveState();
-            renderIncidentsTable();
+            document.getElementById('call-modal').classList.remove('hidden');
         }
 
-        function saveDailySchedule() {
-            state.todaySchedule = document.getElementById('today-schedule').value;
-            saveState();
-            alert("Today's schedule saved!");
-        }
+        function hideCallModal() { document.getElementById('call-modal').classList.add('hidden'); }
 
-        function saveDailyFeedback() {
-            state.dailyGeneralNotes = document.getElementById('daily-general-notes').value;
+        function savePhoneCall() {
+            const kidId = parseInt(document.getElementById('call-kid-select').value);
+            const guardianName = document.getElementById('call-guardian-name').value.trim() || "Main Guardian";
+            const date = document.getElementById('call-date').value || new Date().toISOString().split('T')[0];
+            const outcome = document.getElementById('call-outcome').value;
+            const notes = document.getElementById('call-notes').value.trim();
+
+            state.phoneLogs = state.phoneLogs || [];
+            state.phoneLogs.push({ id: Date.now(), date, kidId, guardianName, outcome, notes });
+
+            const kid = state.kids.find(k => k.id === kidId);
+            if (kid) {
+                kid.callLogs = kid.callLogs || [];
+                kid.callLogs.push({ date, outcome, notes, guardianName });
+            }
+
             saveState();
-            alert("Daily feedback saved!");
+            hideCallModal();
+            alert("Call logged successfully!");
         }
 
         function generateSundayReport() {
-            let report = `LOREN'S COTTAGE - SUNDAY TURNOVER\n\n`;
-            report += `Kids in care: ${state.kids.length}\n`;
-            report += `Daily Notes: ${state.dailyGeneralNotes || "None"}\n`;
-            report += `Incidents this period: ${state.incidents ? state.incidents.length : 0}\n\n`;
-            report += `Prepared by Dramane & Tiffany`;
+            let report = `LOREN'S COTTAGE SUNDAY TURNOVER\n\nKids: ${state.kids.length}\nDaily Notes: ${state.dailyGeneralNotes || "None"}\nIncidents: ${state.incidents ? state.incidents.length : 0}\n\n- Dramane & Tiffany`;
             navigator.clipboard.writeText(report);
-            alert("Sunday report copied to clipboard!");
+            alert("Report copied to clipboard");
         }
 
         function quickWhatsAppMessage() {
-            const text = prompt("What message would you like to send?");
-            if (text) window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+            const msg = prompt("Message:");
+            if (msg) window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         function initializeApp() {
             loadState();
             renderKidsTable();
-            renderChoresTable();
             renderIncidentsTable();
-            
             if (state.todaySchedule) document.getElementById('today-schedule').value = state.todaySchedule;
             if (state.dailyGeneralNotes) document.getElementById('daily-general-notes').value = state.dailyGeneralNotes;
-            
             document.getElementById('section-dashboard').classList.add('active');
         }
 
