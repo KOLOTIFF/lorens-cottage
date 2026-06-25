@@ -15,18 +15,16 @@
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
-    <!-- Top Navigation -->
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <!-- Navigation -->
+    <nav class="bg-white border-b sticky top-0 z-50">
         <div class="max-w-screen-2xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-x-3">
                 <div class="w-11 h-11 bg-teal-800 rounded-2xl flex items-center justify-center">
                     <span class="text-white text-3xl font-bold">LC</span>
                 </div>
-                <div>
-                    <span class="text-2xl font-semibold tracking-tight text-teal-900">Loren's Cottage</span>
-                </div>
+                <span class="text-2xl font-semibold text-teal-900">Loren's Cottage</span>
             </div>
-            <div class="flex items-center gap-x-3">
+            <div class="flex gap-x-3">
                 <button onclick="quickWhatsAppMessage()" class="px-4 py-2 bg-emerald-600 text-white rounded-2xl text-sm font-semibold flex items-center gap-x-2">
                     <i class="fa-brands fa-whatsapp"></i> Quick Message
                 </button>
@@ -36,7 +34,7 @@
     </nav>
 
     <div class="max-w-screen-2xl mx-auto px-6 pt-6 pb-12">
-        <!-- Navigation -->
+        <!-- Tabs -->
         <div class="flex flex-wrap gap-2 mb-6">
             <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="px-5 py-2 bg-teal-800 text-white rounded-3xl text-sm font-semibold">Dashboard</button>
             <button onclick="navigateTo('children')" id="nav-children" class="px-5 py-2 hover:bg-slate-100 rounded-3xl text-sm font-semibold">Children</button>
@@ -52,9 +50,9 @@
         <!-- DASHBOARD -->
         <div id="section-dashboard" class="section active">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white rounded-3xl p-6 border"><div class="text-sm text-teal-700 font-bold">KIDS</div><div id="dash-kids-count" class="text-5xl font-bold">5</div></div>
-                <div class="bg-white rounded-3xl p-6 border"><div class="text-sm text-amber-700 font-bold">CHORES PENDING</div><div id="dash-chores-pending" class="text-5xl font-bold">5</div></div>
-                <div class="bg-white rounded-3xl p-6 border"><div class="text-sm text-rose-700 font-bold">MEDS DUE</div><div id="dash-meds-due" class="text-5xl font-bold">3</div></div>
+                <div class="bg-white rounded-3xl p-6 border"><div class="text-sm text-teal-700 font-bold">KIDS IN HOUSE</div><div id="dash-kids-count" class="text-5xl font-bold text-teal-900">5</div></div>
+                <div class="bg-white rounded-3xl p-6 border"><div class="text-sm text-amber-700 font-bold">CHORES PENDING</div><div id="dash-chores-pending" class="text-5xl font-bold text-amber-900">5</div></div>
+                <div class="bg-white rounded-3xl p-6 border"><div class="text-sm text-rose-700 font-bold">MEDS DUE</div><div id="dash-meds-due" class="text-5xl font-bold text-rose-900">3</div></div>
             </div>
         </div>
 
@@ -86,13 +84,13 @@
             <h2 class="text-2xl font-semibold mb-4">Daily Log &amp; Feedback</h2>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-white rounded-3xl border p-6">
-                    <h3 class="font-bold mb-2">Today's Schedule (from TeamUp)</h3>
-                    <textarea id="today-schedule" rows="6" class="w-full border rounded-2xl p-4 text-sm" placeholder="Paste today's schedule from TeamUp here..."></textarea>
+                    <h3 class="font-bold mb-2">Today's Schedule (paste from TeamUp)</h3>
+                    <textarea id="today-schedule" rows="6" class="w-full border rounded-2xl p-4 text-sm" placeholder="Paste today's TeamUp schedule here..."></textarea>
                     <button onclick="saveDailySchedule()" class="mt-3 warm-btn px-6 h-10 text-white rounded-2xl text-sm">Save Schedule</button>
                 </div>
                 <div class="bg-white rounded-3xl border p-6">
-                    <h3 class="font-bold mb-2">Daily Feedback / What Happened Today</h3>
-                    <textarea id="daily-general-notes" rows="6" class="w-full border rounded-2xl p-4 text-sm" placeholder="Write what the kids did, how the day went..."></textarea>
+                    <h3 class="font-bold mb-2">Daily Feedback / What Happened</h3>
+                    <textarea id="daily-general-notes" rows="6" class="w-full border rounded-2xl p-4 text-sm" placeholder="Write how the day went..."></textarea>
                     <button onclick="saveDailyFeedback()" class="mt-3 warm-btn px-6 h-10 text-white rounded-2xl text-sm">Save Feedback</button>
                 </div>
             </div>
@@ -112,7 +110,7 @@
         <!-- MEDICINE -->
         <div id="section-medicine" class="section">
             <h2 class="text-2xl font-semibold mb-4">Medicine &amp; Care</h2>
-            <button onclick="showLogMedicineModal()" class="warm-btn px-6 h-10 text-white rounded-2xl text-sm">Log Medicine Given</button>
+            <button onclick="showLogMedicineModal()" class="warm-btn px-6 h-10 text-white rounded-2xl text-sm">Log Medicine</button>
             <div id="medicine-recent-logs" class="mt-4 text-sm"></div>
         </div>
 
@@ -160,35 +158,23 @@
     </div>
 
     <script>
-        let state = {
-            kids: [],
-            chores: [],
-            medicineLogs: [],
-            phoneLogs: [],
-            incidents: [],
-            wishItems: [],
-            todaySchedule: "",
-            dailyGeneralNotes: ""
-        };
+        let state = { kids: [], chores: [], medicineLogs: [], phoneLogs: [], incidents: [], wishItems: [], todaySchedule: "", dailyGeneralNotes: "" };
 
         function saveState() { localStorage.setItem('lorensCottageState', JSON.stringify(state)); }
 
         function loadState() {
             const saved = localStorage.getItem('lorensCottageState');
-            if (saved) {
-                state = JSON.parse(saved);
-            } else {
-                seedRealData();
-            }
+            if (saved) state = JSON.parse(saved);
+            else seedRealData();
         }
 
         function seedRealData() {
             state.kids = [
                 { id: 101, name: "Xochtli Ordaz", age: 13, guardian: "Luis Ordaz (Dad)", phone: "602-800-8717", notes: "Uncle Jeremy: 602-551-4186\nTia Nancy: (602) 641-1658\nGrandparents: 623-920-5553\nRoseanne Garcia - Not approved", callLogs: [] },
-                { id: 102, name: "Melody Hernandez", age: 12, guardian: "Maritza Hernandez (Mom)", phone: "(623) 986-3010", notes: "Primo (Uncle): (602) 466-4642\nLuna (sister): (928) 231-6667\nElena Sevilla - Unapproved", callLogs: [] },
-                { id: 103, name: "A'Niya Jackson", age: 12, guardian: "Shantaze Jackson (Mom)", phone: "623-764-7040", notes: "Desaree Rily (Aunt)\nSpecial number: (480) 442-3270", callLogs: [] },
-                { id: 104, name: "Truth Sutton", age: 7, guardian: "Aleesa Baker (Mom)", phone: "602-349-8846", notes: "Joseph Barrientes (Emergency): (412) 478-8137", callLogs: [] },
-                { id: 105, name: "Gianna Taylor", age: 13, guardian: "Dan Taylor", phone: "(480) 220-7392", notes: "GiGi Taylor: (480) 263-1844\nRuss Taylor: 480-707-3647", callLogs: [] }
+                { id: 102, name: "Melody Hernandez", age: 12, guardian: "Maritza Hernandez (Mom)", phone: "(623) 986-3010", notes: "Primo: (602) 466-4642\nElena Sevilla - Unapproved", callLogs: [] },
+                { id: 103, name: "A'Niya Jackson", age: 12, guardian: "Shantaze Jackson (Mom)", phone: "623-764-7040", notes: "Special number: (480) 442-3270", callLogs: [] },
+                { id: 104, name: "Truth Sutton", age: 7, guardian: "Aleesa Baker (Mom)", phone: "602-349-8846", notes: "Joseph Barrientes (Emergency)", callLogs: [] },
+                { id: 105, name: "Gianna Taylor", age: 13, guardian: "Dan Taylor", phone: "(480) 220-7392", notes: "GiGi: (480) 263-1844", callLogs: [] }
             ];
             saveState();
         }
@@ -196,7 +182,6 @@
         function navigateTo(section) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById('section-' + section).classList.add('active');
-            
             if (section === 'children') renderKidsTable();
             if (section === 'chores') renderChoresTable();
             if (section === 'incidents') renderIncidentsTable();
@@ -208,12 +193,7 @@
             state.kids.forEach(kid => {
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-teal-50 cursor-pointer';
-                tr.innerHTML = `
-                    <td class="px-6 py-3 font-semibold">${kid.name}</td>
-                    <td class="px-6 py-3">${kid.age} yrs</td>
-                    <td class="px-6 py-3">${kid.guardian}</td>
-                    <td class="px-6 py-3 font-mono text-xs">${kid.phone}</td>
-                `;
+                tr.innerHTML = `<td class="px-6 py-3 font-semibold">${kid.name}</td><td class="px-6 py-3">${kid.age} yrs</td><td class="px-6 py-3">${kid.guardian}</td><td class="px-6 py-3">${kid.phone}</td>`;
                 tr.onclick = () => showKidDetail(kid.id);
                 tbody.appendChild(tr);
             });
@@ -228,54 +208,34 @@
                 <div class="bg-white w-full max-w-lg rounded-3xl p-7">
                     <h3 class="text-2xl font-semibold">${kid.name}</h3>
                     <p class="text-teal-700">${kid.age} years old</p>
-                    
                     <div class="mt-5">
                         <div class="text-xs text-slate-500 font-bold">MAIN GUARDIAN</div>
                         <div class="font-semibold">${kid.guardian}</div>
                         <div class="font-mono text-teal-700">${kid.phone}</div>
                     </div>
-                    
-                    ${kid.notes ? `
-                    <div class="mt-5">
-                        <div class="text-xs text-slate-500 font-bold">OTHER FAMILY / CONTACTS</div>
-                        <div class="bg-slate-50 rounded-2xl p-4 text-sm whitespace-pre-line">${kid.notes}</div>
-                    </div>` : ''}
-                    
-                    <div class="mt-6 flex justify-end">
-                        <button onclick="this.closest('.fixed').remove()" class="px-6 py-2 bg-teal-800 text-white rounded-2xl">Close</button>
-                    </div>
+                    ${kid.notes ? `<div class="mt-5"><div class="text-xs text-slate-500 font-bold">OTHER FAMILY / CONTACTS</div><div class="bg-slate-50 rounded-2xl p-4 text-sm whitespace-pre-line">${kid.notes}</div></div>` : ''}
+                    <div class="mt-6 flex justify-end"><button onclick="this.closest('.fixed').remove()" class="px-6 py-2 bg-teal-800 text-white rounded-2xl">Close</button></div>
                 </div>
             `;
             document.body.appendChild(modal);
         }
 
-        function showAddKidModal() {
-            document.getElementById('kid-modal').classList.remove('hidden');
-        }
-        function hideKidModal() {
-            document.getElementById('kid-modal').classList.add('hidden');
-        }
+        function showAddKidModal() { document.getElementById('kid-modal').classList.remove('hidden'); }
+        function hideKidModal() { document.getElementById('kid-modal').classList.add('hidden'); }
         function saveKid() {
             const name = document.getElementById('kid-name').value.trim();
             if (!name) return alert("Name is required");
-            
             state.kids.push({
-                id: Date.now(),
-                name: name,
-                age: document.getElementById('kid-age').value,
-                guardian: document.getElementById('kid-guardian').value,
-                phone: document.getElementById('kid-phone').value,
-                notes: document.getElementById('kid-notes').value,
-                callLogs: []
+                id: Date.now(), name: name, age: document.getElementById('kid-age').value,
+                guardian: document.getElementById('kid-guardian').value, phone: document.getElementById('kid-phone').value,
+                notes: document.getElementById('kid-notes').value, callLogs: []
             });
-            saveState();
-            hideKidModal();
-            renderKidsTable();
+            saveState(); hideKidModal(); renderKidsTable();
         }
 
         function renderChoresTable() {
             const tbody = document.getElementById('chores-table-body');
-            tbody.innerHTML = '<tr><td class="px-6 py-8 text-center text-slate-400">Chores system ready. Add new chores using the button above.</td></tr>';
+            tbody.innerHTML = '<tr><td class="px-6 py-8 text-center text-slate-400">Chores ready. Use the button above to add.</td></tr>';
         }
 
         function showAddChoreModal() {
@@ -283,8 +243,7 @@
             if (!name) return;
             state.chores = state.chores || [];
             state.chores.push({ id: Date.now(), name: name, assignedKidId: null, status: "pending", notes: "" });
-            saveState();
-            renderChoresTable();
+            saveState(); renderChoresTable();
         }
 
         function renderIncidentsTable() {
@@ -293,60 +252,30 @@
                 tbody.innerHTML = '<tr><td class="px-6 py-8 text-center text-slate-400">No incidents logged yet.</td></tr>';
                 return;
             }
-            tbody.innerHTML = state.incidents.map(inc => `
-                <tr>
-                    <td class="px-5 py-3">${inc.date}</td>
-                    <td class="px-5 py-3">${inc.childName}</td>
-                    <td class="px-5 py-3">${inc.description}</td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = state.incidents.map(i => `<tr><td class="px-5 py-3">${i.date}</td><td class="px-5 py-3">${i.childName}</td><td class="px-5 py-3">${i.description}</td></tr>`).join('');
         }
 
         function showAddIncidentModal() {
-            const childName = prompt("Child name:");
-            const description = prompt("What happened?");
-            if (!childName || !description) return;
-            
+            const child = prompt("Child name:");
+            const desc = prompt("What happened?");
+            if (!child || !desc) return;
             state.incidents = state.incidents || [];
-            state.incidents.push({
-                id: Date.now(),
-                date: new Date().toISOString().split('T')[0],
-                childName: childName,
-                description: description,
-                action: ""
-            });
-            saveState();
-            renderIncidentsTable();
+            state.incidents.push({ id: Date.now(), date: new Date().toISOString().split('T')[0], childName: child, description: desc });
+            saveState(); renderIncidentsTable();
         }
 
-        function saveDailySchedule() {
-            state.todaySchedule = document.getElementById('today-schedule').value;
-            saveState();
-            alert("Today's schedule saved successfully!");
-        }
-
-        function saveDailyFeedback() {
-            state.dailyGeneralNotes = document.getElementById('daily-general-notes').value;
-            saveState();
-            alert("Daily feedback saved!");
-        }
+        function saveDailySchedule() { state.todaySchedule = document.getElementById('today-schedule').value; saveState(); alert("Schedule saved"); }
+        function saveDailyFeedback() { state.dailyGeneralNotes = document.getElementById('daily-general-notes').value; saveState(); alert("Feedback saved"); }
 
         function generateSundayReport() {
-            let report = `LOREN'S COTTAGE - SUNDAY TURNOVER\n\n`;
-            report += `Kids in care: ${state.kids.length}\n`;
-            report += `Daily Notes: ${state.dailyGeneralNotes || "None"}\n`;
-            report += `Incidents this period: ${state.incidents ? state.incidents.length : 0}\n\n`;
-            report += `Prepared by Dramane & Tiffany`;
-            
+            let report = `LOREN'S COTTAGE SUNDAY TURNOVER\n\nKids: ${state.kids.length}\nDaily Notes: ${state.dailyGeneralNotes || "None"}\nIncidents: ${state.incidents ? state.incidents.length : 0}\n\n- Dramane & Tiffany`;
             navigator.clipboard.writeText(report);
-            alert("Sunday report copied to clipboard! You can now paste it into WhatsApp or email.");
+            alert("Report copied to clipboard");
         }
 
         function quickWhatsAppMessage() {
-            const text = prompt("What message would you like to send?");
-            if (text) {
-                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-            }
+            const msg = prompt("Message:");
+            if (msg) window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         function initializeApp() {
@@ -354,11 +283,8 @@
             renderKidsTable();
             renderChoresTable();
             renderIncidentsTable();
-            
-            // Load saved daily data
             if (state.todaySchedule) document.getElementById('today-schedule').value = state.todaySchedule;
             if (state.dailyGeneralNotes) document.getElementById('daily-general-notes').value = state.dailyGeneralNotes;
-            
             document.getElementById('section-dashboard').classList.add('active');
         }
 
